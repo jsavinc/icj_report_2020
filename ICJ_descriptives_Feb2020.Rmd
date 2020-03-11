@@ -21,11 +21,11 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 library(tidyverse)
 library(lubridate)
 library(knitr)
-
-source("../jan_general_scripts.r")
 ```
 
 # Loading data
+
+## Importing files
 
 ```{r}
 ## The data sits in the folder "./data_routine_Jan2020"
@@ -44,6 +44,117 @@ columnNameReference <- with(data = read.csv("./columnNameReference.csv", strings
 ## we also load reference files for the names of concerns
 concernsReference <- read.table("./concernsReference.txt", sep = ",", stringsAsFactors = FALSE)[,1]
 ```
+
+## Helper functions
+
+To avoid copying the entire script of helper functions I ever developed, here's just the subset used:
+
+```{r, include=FALSE}
+cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+MacPaletteLight <-c("#8cc63f", "#aecfc5", "#bfbdaf", "#c0928e", "#e89842")
+MacPaletteMid <- c("#00a246", "#5dada4", "#a19f91", "#a7776b", "#d37f42")
+MacPaletteDark <- c("#005c46", "#387a7b", "#7b7a6d", "#874346", "#b16438")
+MacPaletteGreen <- c("#8cc63f","#00a246","#005c46")
+MacPaletteAqua <- c("#aecfc5", "#5dada4", "#387a7b")
+MacPaletteStone <- c("#bfbdaf", "#a19f91", "#7b7a6d")
+MacPaletteRust <- c("#c0928e", "#a7776b", "#874346")
+MacPaletteOrange <- c("#e89842", "#d37f42", "#b16438")
+# theme_set(theme_cowplot(font_size=12)
+
+## import 'times' font, if that's what you're into
+# windowsFonts(times = windowsFont('Computer Modern Roman'))
+# 
+theme_plot <- theme_bw() +
+  #theme(panel.grid.major=element_line(size=.25)) +
+  theme(panel.grid.major=element_blank()) +
+  theme(panel.grid.minor=element_blank()) +
+  theme(panel.background=element_rect(fill = "white", size=0.2)) +
+  theme(plot.title=element_text(size=12, vjust=1.25, family="CM Sans", face="bold")) +
+  theme(axis.line = element_line(size=0.2)) +
+  theme(axis.text.x=element_text(size=10, family="CM Sans")) +
+  theme(axis.text.y=element_text(size=10, family="CM Sans")) +
+  theme(axis.title.x=element_text(size=10, vjust=0, family="CM Sans")) +
+  theme(axis.title.y=element_text(size=9, vjust=1.25, family="CM Sans")) +
+  theme(strip.background = element_rect(fill = "white", size = 0.2)) +
+  theme(strip.placement = "outside")
+  theme(strip.text.x = element_text(size = 9, family="CM Sans")) +
+  theme(strip.text.y = element_text(size = 9, family="CM Sans")) +
+  theme(legend.text = element_text(size = 9, family="CM Sans")) +
+  theme(legend.title = element_text(size = 9, family="CM Sans")) +
+  theme(legend.position="bottom") +
+  theme(plot.caption = element_text(size=9, family="CM Sans")) +
+  theme(plot.background = element_blank()) +
+  theme(legend.background = element_rect(fill = 'transparent'))
+#theme(aspect.ratio = 1)
+
+
+## group cancer types
+group_cancer_types <- function(cancer_type) {
+  cancer_type_grouped <- case_when(
+    str_detect(tolower(cancer_type), "bowel|anal|rectum") ~ "bowel",
+    str_detect(tolower(cancer_type), "breast") ~ "breast",
+    str_detect(tolower(cancer_type), "prostat") ~ "prostate",
+    str_detect(tolower(cancer_type), "lung") ~ "lung",
+    TRUE ~ "other"
+  )
+  return(cancer_type_grouped)
+}
+
+group_visit_locations <- function(visit_location) {
+  visit_location_grouped <-
+    case_when(
+      str_detect(visit_location,pattern=regex("library", ignore_case = TRUE)) ~ "Library",
+      str_detect(visit_location,pattern=regex("home", ignore_case = TRUE)) ~ "Home visit",
+      str_detect(visit_location,pattern=regex("outreach", ignore_case = TRUE)) ~ "Outreach",
+      str_detect(visit_location,pattern=regex("workplace", ignore_case = TRUE)) ~ "Workplace",
+      str_detect(visit_location,pattern=regex("phone", ignore_case = TRUE)) ~ "Telephone",
+      str_detect(visit_location,pattern=regex("hospital|infirmary|beatson|victoria", ignore_case = TRUE)) ~ "Hospital",
+      str_detect(visit_location,pattern=regex("hospice", ignore_case = TRUE)) ~ "Hospice",
+      str_detect(visit_location,pattern=regex("other|leisure", ignore_case = TRUE)) ~ "Other",
+      str_detect(visit_location,pattern=regex("F Pearce", ignore_case = TRUE)) ~ "Pearce Institute/Macmillan Café",
+      is.na(visit_location) ~ "Undefined or missing",
+      TRUE ~ "Other"
+    )
+  return(visit_location_grouped)
+}
+
+group_referral_sources <- function(referral_source) {
+  referral_source_grouped <-
+    case_when(
+      str_detect(referral_source,pattern=regex("^A\\s|hospice", ignore_case = TRUE)) ~ "Hospice",
+      str_detect(referral_source,pattern=regex("^O\\s|outreach", ignore_case = TRUE)) ~ "Outreach/Opt out pilot",  # outreach before hospital, otherwise the hospital outreach locations get categorised as hospital!
+      str_detect(referral_source,pattern=regex("^B\\s|hospital|gri\\s|qeuh", ignore_case = TRUE)) ~ "Hospital",
+      str_detect(referral_source,pattern=regex("^C\\s|library", ignore_case = TRUE)) ~ "Library",
+      str_detect(referral_source,pattern=regex("^D\\s|shire", ignore_case = TRUE)) ~ "Local authority (N/S Lanarskhire; W Dunbartonshire)",
+      str_detect(referral_source,pattern=regex("^G\\s|^I\\s", ignore_case = TRUE)) ~ "Macmillan/Glasgow Life/GCC HR/PCUK",
+      str_detect(referral_source,pattern=regex("^GP\\s|\\sgp", ignore_case = TRUE)) ~ "GP",
+      str_detect(referral_source,pattern=regex("^H\\s|social work", ignore_case = TRUE)) ~ "Social work",
+      str_detect(referral_source,pattern=regex("^K\\s", ignore_case = TRUE)) ~ "CNS/District nurse",
+      str_detect(referral_source,pattern=regex("^L\\s", ignore_case = TRUE)) ~ "Self/carer/friend/family member",
+      str_detect(referral_source,pattern=regex("^N\\s", ignore_case = TRUE)) ~ "Other 3rd sector",
+      str_detect(referral_source,pattern=regex("nhs letter", ignore_case = TRUE)) ~ "NHS letter",
+      is.na(referral_source) ~ "Undefined or missing",
+      TRUE ~ "Other"
+    )
+  return(referral_source_grouped)
+}
+
+## function that produces a string with the names of columns that contain different values
+names_of_columns_where_values_differ <- function(data_tbl) {
+  return(paste(names(select_if(.tbl = data_tbl, .predicate = ~n_distinct(.)!=1)), collapse = ", "))
+}
+
+## helper function for combining N and proportion
+num_and_prop <- function(n, denominator) {
+  n_prop <- if_else(
+    condition = n <= 10, 
+    true = "N<=10", 
+    false = paste0(n," (",scales::percent(n/denominator),")")
+  )
+  return(n_prop)
+}
+```
+
 
 ## Data checking & cleaning
 
@@ -313,6 +424,7 @@ clean_data$outcomes_agencies <-
   })
   # pivot_longer(cols=matches("agency"), names_to = c("agency_num","agency_var"), names_pattern = "agency_(\\d)_(.*)", values_to="agency_val")
 ```
+
 
 # ICJ descriptives of routine data
 
@@ -585,7 +697,7 @@ clean_data$hna %>%
   ggplot(., aes(x=factor(simd_area), y=n)) +
   scale_x_discrete(breaks=c(1:5,as.numeric(NA)), labels=c(1:5,"N/A")) +
   geom_col() +
-  theme_bw() +
+  theme_plot +
   labs(x="Deprivation (SIMD Area; 1=most deprived)", y="Number of people")
 
 # fig_caption = "Graphical Breakdown of ICJ users by deprivation (SIMD2016 vigintile; 1=most deprived)."
@@ -598,7 +710,7 @@ clean_data$hna %>%
 #   ggplot(., aes(x=Deprivation, y=n)) +
 #   scale_x_discrete(breaks=c(1:20,as.numeric(NA)), labels=c(1:20,"N/A")) +
 #   geom_col() +
-#   theme_bw() +
+#   theme_plot +
 #   labs(x="Deprivation (SIMD2016 vigintile; 1=most deprived)", y="Number of people")
 ```
 
@@ -628,7 +740,7 @@ clean_data$hna %>%
   facet_wrap(~Year, scales="free_y") +
   scale_x_discrete(breaks=c(1:5,as.numeric(NA)), labels=c(1:5,"N/A")) +
   geom_bar() +
-  theme_bw() +
+  theme_plot +
   labs(
     x="Deprivation (SIMD Area; 1=most deprived)", y="Number of people",
     caption = "Panels show years separately. Note: y-scale is different between years!"
@@ -1288,7 +1400,7 @@ clean_data$inwardref %>%
   filter(year(assessment_start_date)==2019) %>%
   ggplot(data = ., aes(x = referral_source_grouped)) +
   geom_bar() +
-  theme_bw() +
+  theme_plot +
   coord_flip() +
   labs(x="Grouped referral sources (see above)", y="Number of referrals", title="Referrals to ICJ in 2019") +
   NULL
@@ -1376,7 +1488,7 @@ linked_hna_reviews %>%
   # scale_x_continuous(breaks = seq(0,2000, by=30)) +
   facet_wrap(~Year, scales="free_y") +
   geom_freqpoly(binwidth=4, fill=MacPaletteGreen[2], colour="grey10", ) +
-  theme_bw() +
+  theme_plot +
   labs(title = str_wrap("Frequency of number of weeks between first HNA and last Review for ICJ users, over lifetime of ICJ."), x = "Weeks between HNA and Review", y = "Frequency", subtitle = "Note: scales differ between panels!") +
   NULL
  
