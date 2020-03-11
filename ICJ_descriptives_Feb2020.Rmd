@@ -1,0 +1,1551 @@
+---
+title: "ICJ Descriptives February 2020"
+author: "Jan Savinc"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    fig_caption: yes
+    code_folding: hide
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+# knitr::opts_chunk$set(echo = TRUE)  # before report is finalised
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+```{r, warning=FALSE}
+library(tidyverse)
+library(lubridate)
+library(knitr)
+
+source("../jan_general_scripts.r")
+```
+
+# Loading data
+
+```{r}
+## The data sits in the folder "./data_routine_Jan2020"
+raw_data <- list()
+raw_data$cases <- readxl::read_excel("./data_routine_Jan2020/ENU ICJ Case Details 21.01.20.xls", trim_ws = TRUE, guess_max = 10e5)
+raw_data$hna <- readxl::read_excel("./data_routine_Jan2020/ENU ICJ HNA and Plan 20.01.20.xlsx", trim_ws = TRUE, guess_max = 10e5)
+raw_data$onwardref <- readxl::read_excel("./data_routine_Nov2019/ICJ HNA and Plan (BOICJ035RS) 01.11.19.xls", sheet=2, trim_ws = TRUE, guess_max = 10e5)
+raw_data$inwardref <- readxl::read_excel("./data_routine_Jan2020/ENU ICJ Referrals 20.01.20.xls", trim_ws = TRUE, guess_max = 10e5)
+raw_data$reviews <- readxl::read_excel("./data_routine_Jan2020/ENU ICJ Reviews 23.01.20.xls", trim_ws = TRUE, guess_max = 10e5)
+raw_data$additional_visits <- readxl::read_excel("./data_routine_Jan2020/ENU ICJ Additional Visits 21.01.20.xls", trim_ws = TRUE, guess_max = 10e5)
+raw_data$outcomes <- readxl::read_excel("./data_routine_Jan2020/ENU ICJ Outcomes 23.01.20.xls", trim_ws = TRUE, guess_max = 10e5)
+
+## load reference names for columns
+columnNameReference <- with(data = read.csv("./columnNameReference.csv", stringsAsFactors = FALSE),
+  setNames(object=standard, nm=cf_post2014))  # creates a named list
+## we also load reference files for the names of concerns
+concernsReference <- read.table("./concernsReference.txt", sep = ",", stringsAsFactors = FALSE)[,1]
+```
+
+## Data checking & cleaning
+
+All data was checked for duplicates briefly, and where entire rows in the data were duplicated they were removed.
+
+```{r, include=FALSE}
+## check data for duplicates
+any(duplicated(raw_data$cases))
+any(duplicated(raw_data$hna))
+any(duplicated(raw_data$onwardref))
+any(duplicated(raw_data$inwardref))
+any(duplicated(raw_data$reviews))
+any(duplicated(raw_data$additional_visits))
+any(duplicated(raw_data$outcomes))
+
+
+clean_data<-list()
+
+clean_data$cases <- raw_data$cases %>%
+  mutate_if(is.character, ~ifelse(.=="not indicated", NA_character_, .)) %>%
+  distinct
+
+all(names(clean_data$cases) %in% names(columnNameReference))
+
+## rename the columns to reference columns
+names(clean_data$cases) <- 
+  ifelse(
+    names(clean_data$cases) %in% names(columnNameReference), 
+    yes = columnNameReference[names(clean_data$cases)], 
+    no = names(clean_data$cases)
+    )
+
+clean_data$hna <- raw_data$hna %>%
+  mutate_if(is.character, ~ifelse(.=="not indicated", NA_character_, .)) %>%
+  distinct
+
+## rename the columns to reference columns
+names(clean_data$hna) <- 
+  ifelse(
+    names(clean_data$hna) %in% names(columnNameReference), 
+    yes = columnNameReference[names(clean_data$hna)], 
+    no = names(clean_data$hna)
+    )
+
+## group visit locations
+clean_data$hna <-
+  clean_data$hna %>%
+  select(-matches("^SUMMARY_")) %>%  # remove the textual descriptions of concern severity, we don't need them
+  select(-matches("involvement")) %>%  # remove the tags for the various agencies involved, we don't use them for reporting
+  mutate(
+    visit_location_grouped = group_visit_locations(visit_location)
+  ) %>%
+  mutate_at(vars(matches("^CONCERN")), as.numeric) %>%
+  distinct
+
+clean_data$onwardref <- raw_data$onwardref %>%
+  mutate_if(is.character, ~ifelse(.=="not indicated", NA_character_, .)) %>%
+  distinct
+
+all(names(clean_data$onwardref) %in% names(columnNameReference))
+## rename the columns to reference columns
+names(clean_data$onwardref) <- 
+  ifelse(
+    names(clean_data$onwardref) %in% names(columnNameReference), 
+    yes = columnNameReference[names(clean_data$onwardref)], 
+    no = names(clean_data$onwardref)
+    )
+
+
+clean_data$inwardref <- raw_data$inwardref %>%
+  mutate_if(is.character, ~ifelse(.=="not indicated", NA_character_, .)) %>%
+  distinct
+
+all(names(clean_data$inwardref) %in% names(columnNameReference))
+## rename the columns to reference columns
+names(clean_data$inwardref) <- 
+  ifelse(
+    names(clean_data$inwardref) %in% names(columnNameReference), 
+    yes = columnNameReference[names(clean_data$inwardref)], 
+    no = names(clean_data$inwardref)
+    )
+
+clean_data$inwardref <- 
+  clean_data$inwardref %>%
+  mutate(referral_source_grouped = group_referral_sources(referral_source)) %>%
+  distinct
+
+clean_data$reviews <- raw_data$reviews %>%
+  mutate_if(is.character, ~ifelse(.=="not indicated", NA_character_, .)) %>%
+  distinct
+
+all(names(clean_data$reviews) %in% names(columnNameReference))
+## rename the columns to reference columns
+names(clean_data$reviews) <- 
+  ifelse(
+    names(clean_data$reviews) %in% names(columnNameReference), 
+    yes = columnNameReference[names(clean_data$reviews)], 
+    no = names(clean_data$reviews)
+    )
+
+clean_data$reviews <-
+  clean_data$reviews %>%
+  mutate_at(vars(matches("^BEFORE|^AFTER")), as.numeric) %>%  # convert the concern scores to numeric
+  select(-matches("^DIFF_CAT")) %>%  # remove categorical differences, we can work those out by hand later
+  distinct
+
+clean_data$additional_visits <-
+  raw_data$additional_visits %>%
+  mutate_if(is.character, ~ifelse(.=="not indicated", NA_character_, .)) %>%
+  distinct
+
+names(clean_data$additional_visits) <- 
+  ifelse(
+    names(clean_data$additional_visits) %in% names(columnNameReference), 
+    yes = columnNameReference[names(clean_data$additional_visits)], 
+    no = names(clean_data$additional_visits)
+    )
+
+clean_data$outcomes <-
+  raw_data$outcomes %>%
+  mutate_if(is.character, ~ifelse(.=="not indicated", NA_character_, .)) %>%
+  distinct
+
+names(clean_data$outcomes) <- 
+  ifelse(
+    names(clean_data$outcomes) %in% names(columnNameReference), 
+    yes = columnNameReference[names(clean_data$outcomes)], 
+    no = names(clean_data$outcomes)
+    )
+```
+
+
+### Essentially blank entries
+
+There are a number of entries that show up as essentially blank; for example, in an HNA entry, there are a number of data columns denoting concern severity, visit location, how long the HNA took, etc., in addition to some administrative entries that denote the date of an entry, its relative number for that individual, etc, which are automatically added to a record.
+We can find blank entries by looking at blank substantial sections of the record as opposed to the purely administrative sections.
+
+Note: this only applies to assessments - HNAs, reviews, and additional visits; other spreadsheets either had complete data or it would be inappropriate to remove individual records - e.g. for case details, an individual's id and age being recorded in the absence of anything else is still a valid record.
+
+#### Removing essentially blank entries
+
+```{r}
+# for HNAs, the relevant columns are from visit location onwards:
+substantive_columns <-
+  list(
+    additional_visits = clean_data$additional_visits %>% select(visit_location_ni_inc : reason_for_additional_visit_ni_inc) %>% names,  # only 3 entries are substantial
+    hna = clean_data$hna %>% select(visit_location : ncol(.)) %>% names,  # everything from visit location onwards
+    reviews = clean_data$reviews %>% select(matches("^BEFORE|^AFTER|^DIFF|overall_score|further_holistic")) %>% names  # the entire concerns section, including overall concern and the further HNA needed column
+  )
+
+clean_data[c("hna","reviews","additional_visits")] <-
+  map2(
+    .x = clean_data[c("hna","reviews","additional_visits")],
+    .y = substantive_columns[c("hna","reviews","additional_visits")],
+    .f = function(x,y) {x %>% filter(rowSums(!is.na(select(., one_of(y)))) != 0)}
+  )
+```
+
+
+### Partial duplicates
+
+In wide-formatted data (one entry per id), entries with the same id and same date are partial duplicates that occur for various reasons, and can be merged - in some cases they are data entry errors where a second entry was added later, etc.
+
+This doesn't apply to the Onward referrals, Additional visits, and Outcomes spreadsheets, because they were provided in long (or long-ish...) format - i.e. one entry per action, and multiple actions per individual on the same date aren't necessarily duplicates
+
+Notes:
+
+* some individuals have multiple records made on the same date - these should definitely be merged together!
+* the rank_from_first_to_last_completed_hna variable denotes the number of hna records for the individual, in chronological order
+     - some people have entries with the same rank, which seems to be the case where there is a delay between when the entry was first made (assessment start date) and when the entry was closed (assesment end date). In those cases the end date is the same etween the duplicate rank entries, with the start date in the second entry also being the same as the end date. It makes sense to treat these as belonging to the same HNA (the records may differ in which concerns were reported, etc), and the time taken and location are also different between them.
+
+
+```{r}
+map_dfr(
+  clean_data,
+  ~group_by(., id, assessment_start_date) %>% 
+    filter(n()>1) %>% 
+    summarise(num_partial_duplicate_entries=n()) %>% 
+    ungroup %>% 
+    count(num_partial_duplicate_entries), 
+  .id = "source"
+  ) %>%
+  filter(!source %in% c("onwardref","additional_visits","outcomes")) %>%
+  kable(caption="Number of cases with more than one entry on the same date, by spreadsheet, and how many partial duplicates on the same date there were.")
+
+deduplicate_column <- function(column) {
+  if (n_distinct(column)==1) return(column[1])  # return first value if only 1 distinct value exists
+  column <- column[!is.na(column)]  # remove NAs
+  if (n_distinct(column)==1) return(column[1])  # return unique value if it exists now that NAs removed
+  if (is.character(column)) column <- column[!tolower(column) %in% c("n","no","none")]  # remove N, No, None
+  if (is.numeric(column)) return(max(abs(column)))  # if numeric, return the largest absolute value
+  return(tail(column,n=1))  # finally, remove the last value; this ensures we get a single value and is a stand-in for properly sorting factor values; in most cases we should have found a unique value before, so this only really applies when the choice is between 2 actual values that differ in the records
+  # TODO: implement factor ordering of text responses to improve this
+}
+```
+
+#### Manual review of partial duplicates
+
+Note: these won't show in the report for confidentiality purposes!
+
+It's clear there are partial duplicates in all of the spreadsheets. Taking only the first or last entry doesn't work either, because either can be mostly blank. Ideally, we would know a hierarchy of possible values, e.g. blank/missing, followed by a default value (No/None), followed by actual values (Yes/XXX). Then, when the choice is between a blank and a default value, we choose the default, and in a choice between a default and actual value, we choose the actual value.
+For numeric columns, we take the higher absolute value if there are two competing values.
+
+```{r, echo=FALSE}
+# Note: the below are nested df for each combination of id & assessment start date where there were partially duplicate entries; the last row in each nested df is the deduplicated row, with the preceding two rows being the partial duplicates
+
+# View(clean_data$cases %>% group_by(id, assessment_start_date) %>% filter(n()>1) %>% nest() %>% mutate(data=map(data, ~select_if(.tbl = .,.predicate=~n_distinct(.)!=1))) %>% mutate(data = map(data, (function(x) {bind_rows(x,summarise_all(x, ~deduplicate_column(.)))}))))
+# 
+# View(clean_data$hna %>% group_by(id, assessment_start_date) %>% filter(n()>1) %>% nest() %>% mutate(data=map(data, ~select_if(.tbl = .,.predicate=~n_distinct(.)!=1))) %>% mutate(data = map(data, (function(x) {bind_rows(x,summarise_all(x, ~deduplicate_column(.)))}))))
+# 
+# View(clean_data$inwardref %>% group_by(id, assessment_start_date) %>% filter(n()>1) %>% nest() %>% mutate(data=map(data, ~select_if(.tbl = .,.predicate=~n_distinct(.)!=1))) %>% mutate(data = map(data, (function(x) {bind_rows(x,summarise_all(x, ~deduplicate_column(.)))}))))
+# 
+# View(clean_data$reviews %>% group_by(id, assessment_start_date) %>% filter(n()>1) %>% nest() %>% mutate(data=map(data, ~select_if(.tbl = .,.predicate=~n_distinct(.)!=1))) %>% mutate(data = map(data, (function(x) {bind_rows(x,summarise_all(x, ~deduplicate_column(.)))}))))
+```
+
+#### Merging partial duplicates
+
+```{r}
+partial_duplicates_deduplicated <- 
+  map(
+    clean_data[c("cases","hna","inwardref","reviews")],
+    ~group_by(., id, assessment_start_date) %>% filter(n()>1) %>% summarise_all(~deduplicate_column(.)) %>% ungroup
+  )
+
+clean_data[c("cases","hna","inwardref","reviews")] <-
+  map2(
+    .x = clean_data[c("cases","hna","inwardref","reviews")],
+    .y = partial_duplicates_deduplicated[c("cases","hna","inwardref","reviews")],
+    .f = ~anti_join(x = .x, y = .y, by=c("id","assessment_start_date")) %>% bind_rows(., .y)
+  )
+```
+
+### Formatting Outcomes to long format
+
+Outcomes are recorded as wide data (one row per individual) with up to 10 agencies (agency_1, agency_2, etc.) - for programmatic use of data, these need to be converted to long format.
+
+This is complicated by the fact that the columns are only partly systematically organised!
+
+The first step is to identify a primary key in the data on which we can later join it - we'll chop the table into id+other data, and 10 id+agency data chunks:
+
+```{r}
+clean_data$outcomes_agencies <-
+  clean_data$outcomes %>%
+  mutate(outcomes_key=1:n()) %>%  # add a key to each row
+  rename_at(vars(matches("agency_\\d+$")), ~paste0(.,"_name")) %>%  # rename agency_1 to agency_1_name for easier parsing later
+  (function (data_tbl) {
+    id_and_agency <- data_tbl %>% select(outcomes_key, matches("agency"))
+    id_and_other_data <- data_tbl %>% select(-matches("agency"))
+    
+    id_and_agency_longish <-
+      map_dfr(
+        .x = 1:10,
+        .f = ~select(id_and_agency, outcomes_key, matches(paste0("agency_",.x,"(\\_|$)"))) %>%
+          rename_all(~str_replace(., pattern="\\_\\d+", replacement = "")) %>%
+          mutate_at(vars(matches("agency")), ~as.character(.))
+      ) %>%
+      filter(!is.na(agency_name)) %>%  # remove entries with blank agency name - we can't use them even if scores were recorded!
+      mutate(
+        agency_score = as.numeric(agency_score),  # convert back to numeric
+        agency_score = if_else(agency_score > 10, 10, agency_score),  # change scores above 10 to 10, keep otherwise
+        agency_what_happened = tolower(agency_what_happened),
+        agency_what_happened = if_else(str_detect(agency_what_happened, "chose not to attend"), "chose not to attend", agency_what_happened),
+        agency_was_service_helpful = tolower(agency_was_service_helpful),
+        agency_contact = tolower(agency_contact)
+        )
+    left_join(id_and_other_data, id_and_agency_longish, by="outcomes_key")
+  })
+  # pivot_longer(cols=matches("agency"), names_to = c("agency_num","agency_var"), names_pattern = "agency_(\\d)_(.*)", values_to="agency_val")
+```
+
+# ICJ descriptives of routine data
+
+## Number of service users
+
+Since the inception of the service (the earliest case in the data was `r clean_data$cases$assessment_start_date %>% min`), ICJ has served a total of N=`r nrow(clean_data$cases)` people, or N=`r n_distinct(clean_data$cases$id)` individuals (some of whom had multiple assessments).
+
+A total of N=`r nrow(clean_data$hna)` HNAs were made. The table below shows a breakdown of number of assessments made by year & month:
+
+### Referrals to ICJ by month & year
+
+```{r}
+table(lubridate::year(clean_data$inwardref$assessment_start_date),lubridate::month(clean_data$inwardref$assessment_start_date, label=TRUE)) %>% 
+  kable(caption = "Breakdown of Referrals made by year & month")
+```
+
+### Case details recorded by month & year
+
+```{r}
+table(lubridate::year(clean_data$cases$assessment_start_date),lubridate::month(clean_data$cases$assessment_start_date, label=TRUE)) %>% 
+  kable(caption = "Breakdown of Case details recorded by year & month")
+```
+
+### HNAs made by month & year
+
+```{r}
+table(lubridate::year(clean_data$hna$assessment_start_date),lubridate::month(clean_data$hna$assessment_start_date, label=TRUE)) %>% 
+  kable(caption = "Breakdown of HNAs made by year & month")
+```
+
+### Reviews by month & year
+
+```{r}
+table(lubridate::year(clean_data$reviews$assessment_start_date),lubridate::month(clean_data$reviews$assessment_start_date, label=TRUE)) %>% 
+  kable(caption = "Breakdown of Reviews made by year & month")
+```
+
+### Referrals, cases, HNAs
+
+```{r}
+map_dfr(
+  clean_data[c("inwardref","cases","hna")],
+  ~count(., Year=year(assessment_start_date)), 
+  .id = "source"
+) %>%
+  mutate(
+    source=case_when(
+      source=="inwardref" ~ "Referrals to ICJ",
+      source=="cases" ~ "Case details recorded",
+      source=="hna" ~ "HNAs",
+      TRUE ~ source
+    )
+  ) %>%
+  pivot_wider(names_from=Year, values_from = n) %>%
+  kable(caption = "Number of referrals to ICJ, cases recorded, and HNAs made, by year.")
+```
+
+## Time between referral and first HNA
+
+```{r}
+clean_data$inwardref %>%
+  group_by(id) %>%
+  top_n(assessment_start_date, n=-1) %>%
+  slice(1) %>%
+  ungroup %>%
+  left_join(
+    clean_data$cases %>%
+    group_by(id) %>%
+    top_n(assessment_start_date, n=-1) %>%
+    slice(1) %>%
+    ungroup, 
+    by="id"
+  ) %>%
+  mutate(time_between_referral_and_hna = as.numeric(as.duration(interval(assessment_start_date.x,assessment_start_date.y)), unit="days")) %>%
+  count(time_between_referral_and_hna) %>%
+  mutate(
+    time_between_referral_and_hna_grouped = case_when(
+      time_between_referral_and_hna < 0 ~ "HNA recorded before referral",
+      time_between_referral_and_hna == 0 ~ "Same day",
+      time_between_referral_and_hna < 30 ~ "Within a month",
+      time_between_referral_and_hna < 90 ~ "Within 3 months",
+      time_between_referral_and_hna >= 90 ~ "More than 3 months"
+      )
+  ) %>% 
+  filter(!is.na(time_between_referral_and_hna)) %>%
+  group_by(time_between_referral_and_hna_grouped) %>%
+  summarise(
+    n=sum(n)
+    ) %>%
+  ungroup %>%
+  mutate(proportion=scales::percent(n/sum(n))) %>%
+  kable(caption = "Time elapsed between referral and first HNA. Note that because people might have had more than one referral, and more than one HNA, these may not reflect true values.")
+```
+
+The majority of HNAs were recorded on the same day as the referral - this is probably a consequence of the data collection process.
+
+## Take up of referrals
+
+Note: we compute this by identifying the unique number of individuals who had an HNA, and divide that by the number of individuals who were referred to ICJ.
+
+### Take up by SIMD area
+
+Note: Deprivation vigintiles aren't currently available, so this uses SIMD area instead, which is hopefully identical to quintiles!
+
+```{r}
+clean_data$inwardref %>%
+  group_by(id) %>%
+  top_n(assessment_start_date, n=-1) %>%
+  ungroup %>%
+  select(id, simd_area_ref=simd_area) %>%
+  left_join(
+    clean_data$hna %>%
+    group_by(id) %>%
+    top_n(assessment_start_date, n=-1) %>%
+    ungroup %>%
+    select(id, simd_area_hna=simd_area),
+    by = "id"
+  ) %>%
+  mutate(
+    had_hna = !is.na(simd_area_hna),  # this works b/c there were no NAs
+    simd_area_ref = parse_number(simd_area_ref)
+    ) %>%
+  replace_na(list(simd_area_ref="Undefined or missing")) %>%
+  count(simd_area_ref, had_hna) %>%
+  group_by(simd_area_ref) %>%
+  mutate(
+    proportion=scales::percent(n/sum(n))
+    ) %>%
+  filter(had_hna) %>%
+  select(-had_hna) %>%
+  kable(caption = "Proportion of individuals by SIMD area recorded at referral who had an HNA.")
+```
+
+### Take up by sex
+
+```{r}
+clean_data$inwardref %>%
+  group_by(id) %>%
+  top_n(assessment_start_date, n=-1) %>%
+  ungroup %>%
+  select(id, sex_ref=assessment_subject_gender) %>%
+  left_join(
+    clean_data$hna %>%
+    group_by(id) %>%
+    top_n(assessment_start_date, n=-1) %>%
+    ungroup %>%
+    select(id, sex_hna=assessment_subject_gender),
+    by = "id"
+  ) %>%
+  mutate(
+    had_hna = !is.na(sex_hna),  # this works b/c there were no NAs
+    sex_ref = if_else(sex_ref %in% c("M","F"), sex_ref, "Undefined or missing")
+    ) %>%
+  count(sex_ref, had_hna) %>%
+  group_by(sex_ref) %>%
+  mutate(
+    proportion=scales::percent(n/sum(n))
+    ) %>%
+  filter(had_hna) %>%
+  select(-had_hna) %>%
+  kable(caption = "Proportion of individuals who had an HNA by sex recorded at referral.")
+```
+
+## Service user demographics
+
+### Sex
+
+The breakdown of ICJ users by sex (since service inception) was:
+
+```{r}
+clean_data$cases %>% 
+  rename(Sex=assessment_subject_gender) %>%
+  mutate(
+    Sex = case_when(
+        Sex=="U" ~ "Undefined or missing",
+        is.na(Sex) ~ "Undefined or missing",
+        TRUE ~ Sex
+    )
+  ) %>%
+  count(Sex) %>%
+  rename(N=n) %>%
+  mutate(Proportion = scales::percent(N/sum(N))) %>%
+  kable(caption = "Breakdown of ICJ users by sex, over lifetime of ICJ.")
+
+
+clean_data$cases %>% 
+  rename(Sex=assessment_subject_gender) %>%
+  mutate(
+    Sex = case_when(
+        Sex=="U" ~ "Undefined or missing",
+        is.na(Sex) ~ "Undefined or missing",
+        TRUE ~ Sex
+    )
+  ) %>%
+  count(Sex, Year=year(assessment_start_date)) %>%
+  rename(N=n) %>%
+  group_by(Year) %>%
+  mutate(n_prop = num_and_prop(N,sum(N))) %>%
+  select(-N) %>%
+  pivot_wider(names_from = Year, values_from = n_prop) %>%
+  kable(caption = "Breakdown of ICJ users by sex, by year.")
+```
+
+### Age
+
+The breakdown of ICJ users by age recorded in Case details (since service inception) was:
+
+```{r}
+clean_data$cases %>% 
+  rename(Age=ageband_at_assessment) %>%
+  count(Age) %>%
+  replace_na(list(Age="Undefined or missing")) %>%
+  rename(N=n) %>%
+  mutate(Proportion = scales::percent(N/sum(N))) %>%
+  mutate(
+    Proportion=if_else(N<=10, "N<=10", as.character(Proportion)),
+    N=if_else(N<=10, "N<=10", as.character(N))
+    ) %>%
+  kable(caption = "Breakdown of ICJ users by age, over lifetime of ICJ.")
+```
+
+The breakdown of ICJ users by age, by year:
+
+```{r}
+clean_data$cases %>% 
+  rename(Age=ageband_at_assessment) %>%
+  count(Age, Year = year(assessment_start_date)) %>%
+  replace_na(list(Age="Undefined or missing")) %>%
+  group_by(Year) %>%
+  mutate(n_prop = num_and_prop(n, sum(n))) %>%
+  select(-n) %>%
+  arrange(Age, Year) %>%
+  pivot_wider(names_from = Year, values_from = n_prop, values_fill = list(n_prop="N<=10")) %>%
+  kable(caption = "Breakdown of ICJ users by age, by year.")
+```
+
+
+### Deprivation
+
+Note: as of 13 Feb 2020, deprivation data was not included in the ICJ data. In the meantime, we can use the SIMD area as a palceholder - this probably stands for SIMD quintiles!
+
+The breakdown of ICJ users by deprivation (since service inception) was:
+
+```{r}
+clean_data$hna %>%
+  mutate(simd_area=parse_number(simd_area)) %>%
+  count(simd_area) %>%
+  replace_na(list(simd_area="Undefined or missing")) %>%
+  rename(N=n) %>%
+  mutate(Proportion = scales::percent(N/sum(N))) %>%
+  kable(caption = "Breakdown of ICJ users by SIMD Area (1=most deprived).")
+
+# clean_data$hna %>%
+#   rename(Deprivation=Vigintiles) %>%
+#   mutate(Deprivation=parse_number(Deprivation)) %>%
+#   count(Deprivation) %>%
+#   mutate(Deprivation=ifelse(is.na(Deprivation),"Undefined or missing",as.character(Deprivation))) %>%
+#   rename(N=n) %>%
+#   mutate(Proportion = scales::percent(N/sum(N))) %>%
+#   kable(caption = "Breakdown of ICJ users by deprivation (SIMD2016 vigintile; 1=most deprived). Note: the total doesn't match up with the breakdowns above because deprivation vigintiles were recorded in HNAs.")
+```
+
+The same breakdown shown graphically:
+
+```{r, fig.caption="Graphical Breakdown of ICJ users by deprivation (SIMD Area; 1=most deprived), over lifetime of ICJ."}
+clean_data$hna %>%
+  mutate(simd_area=parse_number(simd_area)) %>%
+  count(simd_area) %>%
+  # replace_na(list(simd_area="Undefined or missing")) %>%
+  ggplot(., aes(x=factor(simd_area), y=n)) +
+  scale_x_discrete(breaks=c(1:5,as.numeric(NA)), labels=c(1:5,"N/A")) +
+  geom_col() +
+  theme_bw() +
+  labs(x="Deprivation (SIMD Area; 1=most deprived)", y="Number of people")
+
+# fig_caption = "Graphical Breakdown of ICJ users by deprivation (SIMD2016 vigintile; 1=most deprived)."
+# 
+# clean_data$hna %>%
+#   rename(Deprivation=Vigintiles) %>%
+#   mutate(Deprivation=parse_number(Deprivation)) %>%
+#   count(Deprivation) %>%
+#   mutate(Deprivation = factor(Deprivation)) %>%
+#   ggplot(., aes(x=Deprivation, y=n)) +
+#   scale_x_discrete(breaks=c(1:20,as.numeric(NA)), labels=c(1:20,"N/A")) +
+#   geom_col() +
+#   theme_bw() +
+#   labs(x="Deprivation (SIMD2016 vigintile; 1=most deprived)", y="Number of people")
+```
+
+#### Deprivation by year
+
+Note: as of 13 Feb 2020, deprivation data was not included in the ICJ data. In the meantime, we can use the SIMD area as a palceholder - this probably stands for SIMD quintiles!
+
+```{r}
+clean_data$hna %>%
+  mutate(simd_area=parse_number(simd_area)) %>%
+  count(Year=year(assessment_start_date),simd_area) %>%
+  replace_na(list(simd_area="Undefined or missing")) %>%
+  rename(N=n) %>%
+  group_by(Year) %>%
+  mutate(n_prop = num_and_prop(N, sum(N))) %>%
+  select(-N) %>%
+  pivot_wider(names_from = Year, values_from=n_prop, values_fill = list(n_prop="N<=10")) %>%
+  kable(caption = "Breakdown of ICJ users by SIMD Area (1=most deprived).")
+```
+
+Shown graphically:
+
+```{r, fig.caption="Graphical Breakdown of ICJ users by deprivation (SIMD Area; 1=most deprived), over lifetime of ICJ."}
+clean_data$hna %>%
+  mutate(simd_area=parse_number(simd_area),Year=year(assessment_start_date)) %>%
+  ggplot(., aes(x=factor(simd_area))) +
+  facet_wrap(~Year, scales="free_y") +
+  scale_x_discrete(breaks=c(1:5,as.numeric(NA)), labels=c(1:5,"N/A")) +
+  geom_bar() +
+  theme_bw() +
+  labs(
+    x="Deprivation (SIMD Area; 1=most deprived)", y="Number of people",
+    caption = "Panels show years separately. Note: y-scale is different between years!"
+    ) +
+  NULL
+```
+
+
+### Cancer type
+
+```{r}
+clean_data$cases %>%
+  pivot_longer(cols=matches("diagnosis"), names_to = "source", values_to = "diagnosis", values_drop_na = TRUE) %>%
+  count(diagnosis, sort = TRUE) %>%
+  group_by(n<11) %>%
+  mutate(
+    diagnosis = if_else(condition = n<11,true = paste(diagnosis, collapse=", "),false = diagnosis),
+    n = if_else(condition = n<11,true = sum(n),false = n)
+    ) %>%
+  ungroup %>%
+  distinct %>%
+  mutate(
+    denominator = nrow(clean_data$cases),
+    proportion = scales::percent(n/denominator)
+    ) %>%
+  select(-denominator, -`n < 11`) %>%
+  kable(caption = "Cancer type & proportions. Cancers reported 10 or fewer times aggregated. Note that because an individual can have more than one diagnosis, the proportions don't add up to 100%.")
+```
+
+#### Big 4 cancer types over the years
+
+```{r}
+clean_data$cases %>%
+  mutate(case_index = 1:n()) %>%  # for tracking nubmer of individuals per year
+  mutate(Year = year(assessment_start_date)) %>%
+  pivot_longer(cols=matches("diagnosis"), names_to = "source", values_to = "diagnosis", values_drop_na = TRUE) %>%
+  mutate(cancer_type = group_cancer_types(diagnosis)) %>%
+  distinct %>%
+  group_by(Year, cancer_type) %>%
+  summarise(n = n_distinct(case_index)) %>%
+  left_join(clean_data$cases %>% count(Year=year(assessment_start_date), name="denominator"), by="Year") %>%
+  mutate(n_prop = num_and_prop(n,denominator)) %>%
+  select(-n,-denominator) %>%
+  pivot_wider(names_from=Year, values_from=n_prop) %>%
+  kable(caption = "Cancer type & proportions within users each year. Note that because an individual can have more than one diagnosis, the proportions don't add up to 100%.")
+```
+
+#### Cancer types in 2019
+
+```{r}
+clean_data$cases %>%
+  filter(year(assessment_start_date)==2019) %>%
+  pivot_longer(cols=matches("diagnosis"), names_to = "source", values_to = "diagnosis", values_drop_na = TRUE) %>%
+  count(diagnosis, sort = TRUE) %>%
+  group_by(n<11) %>%
+  mutate(
+    diagnosis = if_else(condition = n<11,true = paste(diagnosis, collapse=", "),false = diagnosis),
+    n = if_else(condition = n<11,true = sum(n),false = n)
+    ) %>%
+  ungroup %>%
+  distinct %>%
+  mutate(
+    denominator = nrow(clean_data$cases %>% filter(year(assessment_start_date)==2019)),
+    proportion = scales::percent(n/denominator)
+    ) %>%
+  select(-denominator, -`n < 11`) %>%
+  kable(caption = "Cancer type & proportions for ICJ users in 2019. Cancers reported 10 or fewer times aggregated. Note that because an individual can have more than one diagnosis, the proportions don't add up to 100%.")
+```
+
+
+### Stage in cancer journey
+
+The breakdown of ICJ users by Stage in cancer journey (since service inception) was:
+
+```{r}
+clean_data$hna %>% 
+  rename(Stage=stage_in_journey) %>%
+  count(Stage) %>%
+  rename(N=n) %>%
+  replace_na(list(Stage="Missing or undefined")) %>%  arrange(desc(N)) %>%
+  mutate(
+    Proportion = scales::percent(N/sum(N)),
+    Proportion = ifelse(N<=10, "N<=10", Proportion),
+    N = ifelse(N<=10, "N<=10", N)
+    ) %>%
+  kable(caption = "Breakdown of ICJ users by Stage in cancer journey, over lifetime of ICJ.")
+```
+
+#### Cancer stages by year
+
+The breakdown of stages by year:
+
+```{r}
+clean_data$hna %>% 
+  rename(Stage=stage_in_journey) %>%
+  count(Stage, Year=year(assessment_start_date)) %>%
+  rename(N=n) %>%
+  replace_na(list(Stage="Missing or undefined")) %>%
+  arrange(Year) %>%
+  group_by(Year) %>%
+  mutate(
+    n_prop = num_and_prop(N, sum(N))
+    ) %>%
+  ungroup %>%
+  select(-N) %>%
+  pivot_wider(names_from = Year, values_from=n_prop, values_fill = list(n_prop="N<=10")) %>%
+  kable(caption = "Breakdown of ICJ users by Stage in cancer journey, by year of HNA assessment.")
+```
+
+### HNA visit location
+
+#### Grouped locations
+
+There were many locations recorded, so they were grouped according to the following table:
+
+```{r}
+clean_data$hna %>% select(visit_location_grouped,visit_location) %>% distinct %>% arrange(visit_location_grouped,visit_location) %>%
+  kable(caption = "How HNA locations were grouped.")
+```
+
+#### HNA locations overall
+
+```{r}
+clean_data$hna %>% 
+  rename(Location=visit_location_grouped) %>%
+  count(Location) %>%
+  rename(N=n) %>%
+  replace_na(list(Location="Missing or undefined")) %>%
+  arrange(desc(N)) %>%
+  mutate(Proportion = scales::percent(N/sum(N))) %>%
+  kable(caption = "Breakdown of HNAs by visit location, over ICJ lifetime.")
+```
+
+#### HNA locations, by year
+
+The below table shows breakdown of locations by year:
+
+```{r}
+clean_data$hna %>% 
+  rename(Location=visit_location_grouped) %>%
+  count(Year = year(assessment_start_date), Location) %>%
+  group_by(Year) %>%
+  mutate(n_prop = num_and_prop(n,sum(n))) %>%
+  select(-n) %>%
+  pivot_wider(names_from=Year,values_from=n_prop) %>%
+  kable(caption = "Breakdown of HNAs by visit location, by year.")
+```
+
+
+#### Proportion of home visits over the years
+
+The location of visits changed over time. In particular, the percentage of home visits has changed as follows:
+
+```{r}
+clean_data$hna %>% 
+  mutate(
+    Location=visit_location_grouped,
+    Year = year(assessment_start_date)
+    ) %>%
+  group_by(Year) %>%
+  count(Location) %>%
+  rename(N=n) %>%
+  replace_na(list(Location="Missing or undefined")) %>%
+  arrange(Year,desc(N)) %>%
+  mutate(Proportion = scales::percent(N/sum(N))) %>%
+  filter(Location=="Home visit") %>%
+  kable(caption = "Proportion of HNAs in each year that were home visits.")
+```
+
+#### Proportion of HNAs in hospital
+
+```{r}
+clean_data$hna %>% 
+  mutate(
+    Location=visit_location_grouped,
+    Year = year(assessment_start_date)
+    ) %>%
+  group_by(Year) %>%
+  count(Location) %>%
+  rename(N=n) %>%
+  replace_na(list(Location="Missing or undefined")) %>%
+  arrange(Year,desc(N)) %>%
+  mutate(Proportion = scales::percent(N/sum(N))) %>%
+  filter(Location=="Hospital") %>%
+  kable(caption = "Proportion of HNAs in each year that were in hospital.")
+```
+
+### Multiple HNAs
+
+How many individuals had more than one HNA? This is somewhat complicated by partial duplicates, where essentially the same HNA was done in several parts over multiple days, in which case we would need to compile the parts that belong to the same assessment.
+
+Note: an individual may have gotten in touch with ICJ in quick succession, so some HNAs happen within a few days' time, whereas in other cases the same individual may only have gotten in touch after a year or so!
+
+```{r}
+clean_data$hna %>%
+  group_by(id) %>%
+  summarise(number_hnas = n()) %>%
+  count(number_hnas) %>%
+  group_by(number_hnas>=4) %>%
+  mutate(
+    number_hnas = if_else(number_hnas>=4, paste0(min(number_hnas),"-",max(number_hnas)),as.character(number_hnas)),
+    n = if_else(number_hnas>=4, sum(n), n)
+    ) %>%
+  ungroup %>%
+  distinct %>%
+  select(number_hnas, n) %>%
+  mutate(proportion = scales::percent(n / n_distinct(clean_data$hna$id))) %>%
+  kable(caption = "Number and proportion of individuals who had one or more HNAs over the lifetime of ICJ.")
+
+clean_data$hna %>%
+  group_by(id, Year = year(assessment_start_date)) %>%
+  summarise(number_hnas = n()) %>%
+  ungroup %>%
+  count(more_than_one=number_hnas>1,Year) %>%  # this is still the number of individuals
+  left_join(clean_data$hna %>% group_by(Year=year(assessment_start_date)) %>% summarise(denominator=n_distinct(id)), by="Year") %>%
+  mutate(
+    more_than_one = if_else(more_than_one, "More than 1 HNA", "Just one HNA"),
+    n_prop = paste0(n, " (", scales::percent(n/denominator),")")
+    ) %>%
+  select(-n, -denominator) %>%
+  pivot_wider(names_from = more_than_one, values_from = n_prop) %>%
+  kable(caption = "Number & proportion of individuals who had more than one HNA by year.")
+```
+
+
+### Employment status - raw
+
+```{r}
+clean_data$cases %>%
+  count(Employment=employment_status_inc_ni, name = "N") %>%
+  replace_na(list(Employment="Missing or undefined")) %>%
+  mutate(
+    Proportion = scales::percent(N/sum(N)),
+    Proportion = ifelse(N<=10, "N<=10", Proportion),
+    N = ifelse(N<=10, "N<=10", N)
+    ) %>%
+  kable(caption = "Employment status of ICJ users using raw employment status data, over lifetime of service.")
+```
+
+### Employment status - simplified
+
+We can count as unemployed persons who are:
+
+* in voluntary work
+* Not in educ/train/emp
+* Unemployed / job seeker
+* Not currently working rec support of ESS
+
+Any kind of education (com) wil be treated as "in education".
+
+Retirement is treated as-is.
+
+```{r}
+clean_data$cases %>%
+  mutate(
+    Employment = case_when(
+      str_detect(tolower(employment_status_inc_ni), "not in educ|unemploy|not currently working|voluntary") ~ "Unemployed",
+      str_detect(tolower(employment_status_inc_ni), "\\bemployed") ~ "Employed",
+      str_detect(tolower(employment_status_inc_ni), "learn|in educ|in further") ~ "In education",
+      TRUE ~ employment_status_inc_ni
+    )
+  ) %>%
+  replace_na(list(Employment="Missing or undefined")) %>%
+  count(Employment, name = "N", sort=TRUE) %>%
+  mutate(Proportion = scales::percent(N/sum(N))) %>%
+  kable(caption="Employment status of ICJ users using simplified employment status (unemployment includes voluntary work, job seekers recipients, and ESS support recipients), over lifetime of ICJ.")
+```
+
+#### Employment over years
+
+```{r}
+clean_data$cases %>%
+  mutate(
+    Employment = case_when(
+      str_detect(tolower(employment_status_inc_ni), "not in educ|unemploy|not currently working|voluntary") ~ "Unemployed",
+      str_detect(tolower(employment_status_inc_ni), "\\bemployed") ~ "Employed",
+      str_detect(tolower(employment_status_inc_ni), "learn|in educ|in further") ~ "In education",
+      TRUE ~ employment_status_inc_ni
+    )
+  ) %>%
+  replace_na(list(Employment="Missing or undefined")) %>%
+  count(Employment, Year=year(assessment_start_date), name = "N") %>%
+  arrange(Year) %>%
+  group_by(Year) %>%
+  mutate(n_prop = num_and_prop(N, sum(N))) %>%
+  select(-N) %>%
+  pivot_wider(names_from = Year, values_from = n_prop, values_fill = list(n_prop="N<=10")) %>%
+  kable(caption="Employment status of ICJ users using simplified employment status (see above for details), by year.")
+```
+
+### Comorbidities
+
+How many people reported having comorbidities?
+
+```{r}
+clean_data$cases %>%
+  mutate_at(vars(matches("co_morbid")), ~if_else(tolower(.)=="none", NA_character_, .)) %>%
+  mutate(num_comorbidities = rowSums(!is.na(select(., matches("co_morbid"))))) %>%
+  count(num_comorbidities) %>%
+  mutate(Proportion = scales::percent(n/sum(n))) %>%
+  kable(caption="Number of comorbidities reported in Case details, over lifetime of ICJ.")
+
+clean_data$cases %>%
+  mutate_at(vars(matches("co_morbid")), ~if_else(tolower(.)=="none", NA_character_, .)) %>%
+  mutate(num_comorbidities = rowSums(!is.na(select(., matches("co_morbid"))))) %>%
+  count(num_comorbidities) %>%
+  group_by(one_or_more=num_comorbidities>0) %>%
+  mutate(n=sum(n), num_comorbidities = if_else(one_or_more, "One or more", "None")) %>%
+  ungroup %>%
+  distinct %>%
+  mutate(Proportion = scales::percent(n/sum(n))) %>%
+  select(-one_or_more) %>%
+  kable(caption="Any comorbidities reported in Case details, over lifetime of ICJ.")
+
+# clean_data$cases %>%
+#   pivot_longer(cols = matches("co_morbid"), names_to = "source", values_to = "comorbidity") %>%
+#   filter(!is.na(comorbidity)) %>%
+#   filter(comorbidity!="None") %>%
+#   select(id, comorbidity) %>%
+#   distinct %>%
+#   right_join(clean_data$cases, by="id") %>%
+#   mutate(has_comorbidity = if_else(!is.na(comorbidity), "Yes", "No")) %>%
+#   count(has_comorbidity, name ="N", sort= TRUE) %>%
+#   mutate(Proportion = scales::percent(N/sum(N))) %>%
+#   kable(caption="Proportion of individuals who have any co-morbidities (recorded in Case details as at least one listed co-morbidity), over lifetime of ICJ.")
+```
+
+```{r}
+clean_data$cases %>%
+  mutate_at(vars(matches("co_morbid")), ~if_else(tolower(.)=="none", NA_character_, .)) %>%
+  mutate(num_comorbidities = rowSums(!is.na(select(., matches("co_morbid"))))) %>%
+  count(Year=year(assessment_start_date),num_comorbidities) %>%
+  group_by(Year) %>%
+  mutate(n_prop = num_and_prop(n, sum(n))) %>%
+  select(-n) %>%
+  pivot_wider(names_from=Year, values_from=n_prop, values_fill=list(n_prop="N<=10")) %>%
+  kable(caption="Number of comorbidities reported in Case details, by year.")
+
+# clean_data$cases %>%
+#   pivot_longer(cols = matches("co_morbid"), names_to = "source", values_to = "comorbidity") %>%
+#   filter(!is.na(comorbidity)) %>%
+#   filter(comorbidity!="None") %>%
+#   select(id, comorbidity) %>%
+#   distinct %>%
+#   group_by(id) %>%
+#   summarise(num_comorbidities = n()) %>%
+#   right_join(clean_data$cases, by="id") %>%
+#   replace_na(list(num_comorbidities=0)) %>%
+#   count(num_comorbidities, name ="N", sort= TRUE) %>%
+#   mutate(Proportion = scales::percent(N/sum(N))) %>%
+#   kable(caption="Proportion of individuals who have any co-morbidities (recorded in Case details as at least one listed co-morbidity), over lifetime of ICJ.")
+```
+
+## Overall severity of concern
+
+The overall rating of *Overall concern* severity (a 0-10 scale, with 0=no concern) averaged over all HNAs was `r clean_data$hna$overall_score_for_concern_over_last_week %>% parse_number() %>% mean(na.rm=TRUE) %>% round(digits=2)`
+
+### Overall concern over time
+
+The below table shows the overall concern score reported in each year of ICJ:
+
+```{r}
+clean_data$hna %>%
+  mutate(Year = year(assessment_start_date)) %>%
+  group_by(Year) %>%
+  summarise(
+    N = sum(!is.na(parse_number(overall_score_for_concern_over_last_week))),
+    Mean = mean(parse_number(overall_score_for_concern_over_last_week), na.rm=TRUE)#,
+    # SD = sd(parse_number(overall_score_for_concern_over_last_week), na.rm=TRUE),
+    # Conf.int.low = Mean + ((qt(p=0.025, df=N-1) * SD/sqrt(N))),
+    # Conf.int.high = Mean + ((qt(p=0.975, df=N-1) * SD/sqrt(N)))
+  ) %>%
+  kable(caption="Overall severity of concern over time. N stands for the number of times Overall concern was reported in a given year.", digits = 2)
+```
+
+## Top concerns at HNA
+
+Note: the concern *Wound care after surgery* is missing in the data exported from CareFirst, likely because it was never reported.
+
+## Top 5 concerns overall
+
+### Top 5 most severe
+
+```{r}
+clean_data$hna %>%
+  select(matches("^CONCERN_")) %>%
+  gather(key="concern", value="severity") %>%
+  mutate(
+    # severity=parse_number(severity),
+    concern = gsub(concern, pattern="CONCERN_(.*)$", replacement="\\1")
+    ) %>%
+  group_by(concern) %>%
+  summarise(
+    N = sum(!is.na(severity)),
+    Mean = mean(severity, na.rm=TRUE),
+    SD = sd(severity, na.rm=TRUE),
+    Median = median(severity, na.rm=TRUE)
+    ) %>%
+  arrange(desc(Mean)) %>%
+  slice(1:5) %>%
+  kable(caption = "Top 5 most severe rated concerns over lifetime of ICJ.", digits = 2)
+```
+
+### Top 5 most reported
+
+```{r}
+clean_data$hna %>%
+  select(matches("^CONCERN_")) %>%
+  gather(key="concern", value="severity") %>%
+  mutate(
+    # severity=parse_number(severity),
+    concern = gsub(concern, pattern="CONCERN_(.*)$", replacement="\\1")
+    ) %>%
+  group_by(concern) %>%
+  summarise(
+    N = sum(!is.na(severity)),
+    Mean = mean(severity, na.rm=TRUE),
+    SD = sd(severity, na.rm=TRUE),
+    Median = median(severity, na.rm=TRUE)
+    ) %>%
+  arrange(desc(N)) %>%
+  slice(1:5) %>%
+  kable(caption = "Top 5 most reported concerns over lifetime of ICJ.", digits = 2)
+```
+
+## Top 5 concerns for lowest / highest deprivation groups
+
+### Top 5 most severe concerns
+
+Note: we're missing deprivation data at the moment, but can use SIMD area as a placeholder in the meantime.
+
+Note also: there were very few cases in the most deprived category
+
+```{r}
+clean_data$hna %>%
+  mutate(simd_area=parse_number(simd_area)) %>%
+  select(simd_area, matches("^CONCERN")) %>%
+  pivot_longer(cols = matches("^CONCERN"), names_to = "concern", values_to="severity", values_drop_na = TRUE) %>%
+  mutate(concern = gsub(concern, pattern="CONCERN_(.*)$", replacement="\\1")) %>%
+  group_by(simd_area, concern) %>%
+  summarise(
+    N = sum(!is.na(severity)),
+    Mean = mean(severity, na.rm=TRUE),
+    SD = mean(severity, na.rm=TRUE),
+    Median = median(severity, na.rm=TRUE)
+    ) %>%
+  filter(simd_area %in% c(1,5)) %>%
+  filter(N>10) %>%  # only take concerns that affect a large number of people
+  top_n(Mean, n = 5) %>%
+  arrange(simd_area,desc(Mean)) %>%
+  kable(caption = "Top 5 most severe rated concerns for SIMD area 1 (most deprived) and 5 over lifetime of ICJ; note that only concerns reported more than 10 times were included.")
+```
+
+### Top 5 most commonly reported
+
+```{r}
+clean_data$hna %>%
+  mutate(simd_area=parse_number(simd_area)) %>%
+  select(simd_area, matches("^CONCERN")) %>%
+  pivot_longer(cols = matches("^CONCERN"), names_to = "concern", values_to="severity", values_drop_na = TRUE) %>%
+  mutate(concern = gsub(concern, pattern="CONCERN_(.*)$", replacement="\\1")) %>%
+  group_by(simd_area, concern) %>%
+  summarise(
+    N = sum(!is.na(severity)),
+    Mean = mean(severity, na.rm=TRUE)#,
+    # SD = mean(severity, na.rm=TRUE),
+    # Median = median(severity, na.rm=TRUE)
+    ) %>%
+  filter(simd_area %in% c(1,5)) %>%
+  top_n(N, n = 5) %>%
+  arrange(simd_area,desc(N)) %>%
+  # pivot_wider(names_from = simd_area, values_from=c(concern, N, Mean), values_fn = list(N = list)) %>%
+  kable(caption = "Top 5 most reported concerns for SIMD area 1 and 5 over lifetime of ICJ.")
+```
+
+## Top 5 concerns by sex
+
+### Top 5 most severe concerns by sex
+
+```{r}
+clean_data$hna %>%
+  select(sex=assessment_subject_gender, matches("^CONCERN")) %>%
+  filter(sex %in% c("M","F")) %>%
+  # mutate(sex=if_else(!sex %in% c("M","F"), "Missing or undefined", sex)) %>%
+  pivot_longer(cols = matches("^CONCERN"), names_to = "concern", values_to="severity", values_drop_na = TRUE) %>%
+  mutate(concern = gsub(concern, pattern="CONCERN_(.*)$", replacement="\\1")) %>%
+  group_by(sex, concern) %>%
+  summarise(
+    N = sum(!is.na(severity)),
+    Mean = mean(severity, na.rm=TRUE)#,
+    # SD = mean(severity, na.rm=TRUE),
+    # Median = median(severity, na.rm=TRUE)
+    ) %>%
+  top_n(Mean, n = 5) %>%
+  arrange(sex, desc(Mean)) %>%
+  # pivot_wider(names_from = simd_area, values_from=c(concern, N, Mean), values_fn = list(N = list)) %>%
+  kable(caption = "Top 5 most severely rated concerns, by sex, over lifetime of ICJ.")
+```
+
+
+### Top 5 most frequent concerns by sex
+
+```{r}
+clean_data$hna %>%
+  select(sex=assessment_subject_gender, matches("^CONCERN")) %>%
+  filter(sex %in% c("M","F")) %>%
+  # mutate(sex=if_else(!sex %in% c("M","F"), "Missing or undefined", sex)) %>%
+  pivot_longer(cols = matches("^CONCERN"), names_to = "concern", values_to="severity", values_drop_na = TRUE) %>%
+  mutate(concern = gsub(concern, pattern="CONCERN_(.*)$", replacement="\\1")) %>%
+  group_by(sex, concern) %>%
+  summarise(
+    N = sum(!is.na(severity)),
+    Mean = mean(severity, na.rm=TRUE)#,
+    # SD = mean(severity, na.rm=TRUE),
+    # Median = median(severity, na.rm=TRUE)
+    ) %>%
+  top_n(N, n = 5) %>%
+  arrange(sex, desc(N)) %>%
+  # pivot_wider(names_from = simd_area, values_from=c(concern, N, Mean), values_fn = list(N = list)) %>%
+  kable(caption = "Top 5 most severely rated concerns, by sex, over lifetime of ICJ.")
+```
+
+
+## Top 5 concerns by stage in journey (just diagnosed vs. palliative care) 
+
+### Top 5 most severe concerns
+
+```{r}
+clean_data$hna %>%
+  filter(str_detect(stage_in_journey, "palliative|diagnosed")) %>%
+  select(stage_in_journey, matches("^CONCERN")) %>%
+  pivot_longer(cols = matches("^CONCERN"), names_to = "concern", values_to="severity", values_drop_na = TRUE) %>%
+  mutate(concern = gsub(concern, pattern="CONCERN_(.*)$", replacement="\\1")) %>%
+  group_by(stage_in_journey, concern) %>%
+  summarise(
+    N = sum(!is.na(severity)),
+    Mean = mean(severity, na.rm=TRUE)#,
+    # SD = mean(severity, na.rm=TRUE),
+    # Median = median(severity, na.rm=TRUE)
+    ) %>%
+  filter(N > 10) %>%
+  top_n(Mean, n = 5) %>%
+  arrange(stage_in_journey, desc(Mean)) %>%
+  # pivot_wider(names_from = simd_area, values_from=c(concern, N, Mean), values_fn = list(N = list)) %>%
+  kable(caption = "Top 5 most severely rated concerns, by stage in journey (just diagnosed vs. palliative care), over lifetime of ICJ. Note: only concerns reported more than 10 times included.")
+```
+
+### Top 5 most frequent concerns
+
+```{r}
+clean_data$hna %>%
+  filter(str_detect(stage_in_journey, "palliative|diagnosed")) %>%
+  select(stage_in_journey, matches("^CONCERN")) %>%
+  pivot_longer(cols = matches("^CONCERN"), names_to = "concern", values_to="severity", values_drop_na = TRUE) %>%
+  mutate(concern = gsub(concern, pattern="CONCERN_(.*)$", replacement="\\1")) %>%
+  group_by(stage_in_journey, concern) %>%
+  summarise(
+    N = sum(!is.na(severity)),
+    Mean = mean(severity, na.rm=TRUE)#,
+    # SD = mean(severity, na.rm=TRUE),
+    # Median = median(severity, na.rm=TRUE)
+    ) %>%
+  filter(N > 10) %>%
+  top_n(N, n = 5) %>%
+  arrange(stage_in_journey, desc(N)) %>%
+  # pivot_wider(names_from = simd_area, values_from=c(concern, N, Mean), values_fn = list(N = list)) %>%
+  kable(caption = "Top 5 most frequently reported concerns, by stage in journey (just diagnosed vs. palliative care), over lifetime of ICJ.")
+```
+
+## Top 5 concerns by age (under 40 and above 40)
+
+### Top 5 most severe concerns
+
+```{r}
+clean_data$hna %>%
+  select(ageband_at_assessment, matches("^CONCERN")) %>%
+  filter(!is.na(ageband_at_assessment)) %>%
+  mutate(ageband_at_assessment = if_else(ageband_at_assessment %in% c("16 to 24 years","25 to 49 years"), "<50 years", "50+ years")) %>%
+  pivot_longer(cols = matches("^CONCERN"), names_to = "concern", values_to="severity", values_drop_na = TRUE) %>%
+  mutate(concern = gsub(concern, pattern="CONCERN_(.*)$", replacement="\\1")) %>%
+  group_by(ageband_at_assessment, concern) %>%
+  summarise(
+    N = sum(!is.na(severity)),
+    Mean = mean(severity, na.rm=TRUE)#,
+    # SD = mean(severity, na.rm=TRUE),
+    # Median = median(severity, na.rm=TRUE)
+    ) %>%
+  filter(N > 10) %>%
+  top_n(Mean, n = 5) %>%
+  arrange(ageband_at_assessment, desc(Mean)) %>%
+  # pivot_wider(names_from = simd_area, values_from=c(concern, N, Mean), values_fn = list(N = list)) %>%
+  kable(caption = "Top 5 most severely rated concerns, by age under 50 or above, over lifetime of ICJ. Note: only concerns reported more than 10 times included.")
+```
+
+### Top 5 most frequent concerns
+
+```{r}
+clean_data$hna %>%
+  select(ageband_at_assessment, matches("^CONCERN")) %>%
+  filter(!is.na(ageband_at_assessment)) %>%
+  mutate(ageband_at_assessment = if_else(ageband_at_assessment %in% c("16 to 24 years","25 to 49 years"), "<50 years", "50+ years")) %>%
+  pivot_longer(cols = matches("^CONCERN"), names_to = "concern", values_to="severity", values_drop_na = TRUE) %>%
+  mutate(concern = gsub(concern, pattern="CONCERN_(.*)$", replacement="\\1")) %>%
+  group_by(ageband_at_assessment, concern) %>%
+  summarise(
+    N = sum(!is.na(severity)),
+    Mean = mean(severity, na.rm=TRUE)#,
+    # SD = mean(severity, na.rm=TRUE),
+    # Median = median(severity, na.rm=TRUE)
+    ) %>%
+  top_n(N, n = 5) %>%
+  arrange(ageband_at_assessment, desc(N)) %>%
+  # pivot_wider(names_from = simd_area, values_from=c(concern, N, Mean), values_fn = list(N = list)) %>%
+  kable(caption = "Top 5 most frequent concern, by age under 50 or above, over lifetime of ICJ. Note: only concerns reported more than 10 times included.")
+```
+
+## Inward referrals
+
+### Grouping referral sources
+
+The below table shows how the referral sources have been grouped:
+
+```{r}
+clean_data$inwardref %>% select(referral_source_grouped, referral_source) %>% distinct %>% arrange(referral_source_grouped, referral_source) %>% kable(caption="How referral sources were grouped.")
+```
+
+### Where did referrals come from?
+
+```{r}
+clean_data$inwardref %>% 
+  count(referral_source_grouped) %>%
+  mutate(
+    Proportion = scales::percent(n/sum(n,na.rm = TRUE)),
+    n = ifelse(n<=10, "<=10", n)
+    ) %>%
+  kable(caption="Referral sources (grouped, see above) for referrals to ICJ, over lifetime of the service.")
+```
+
+The below table shows referrals, broken down by year:
+
+```{r}
+clean_data$inwardref %>% 
+  count(Year=year(assessment_start_date),referral_source_grouped) %>%
+  group_by(Year) %>%
+  mutate(
+    n_prop = num_and_prop(n, sum(n))
+    ) %>%
+  select(-n) %>%
+  pivot_wider(names_from=Year, values_from=n_prop) %>%
+  kable(caption="Referral sources (grouped, see above) for referrals to ICJ, by year.")
+```
+
+### Where did referrals come from in 2019?
+
+```{r}
+clean_data$inwardref %>% 
+  filter(year(assessment_start_date)==2019) %>%
+  ggplot(data = ., aes(x = referral_source_grouped)) +
+  geom_bar() +
+  theme_bw() +
+  coord_flip() +
+  labs(x="Grouped referral sources (see above)", y="Number of referrals", title="Referrals to ICJ in 2019") +
+  NULL
+```
+
+## Onward referrals
+
+A total of N=`r clean_data$onwardref %>% select(id, assessment_start_date) %>% n_distinct` assessments also included onward referrals, and a total of N=`r nrow(clean_data$onwardref)` onward referrals have been made since ICJ inception, for a total of N=`r n_distinct(clean_data$onwardref$id)` individuals. An average of `r clean_data$onwardref %>% count(id, assessment_start_date) %>% .$n %>% mean %>% round(digits=2)` referrals per assessment were made. Referrals were made to `r n_distinct(clean_data$onwardref$answer)` agencies (note: this is likely an overestimate - some of those are spelling variants of each other etc.)
+
+### Breakdown of referrals by time
+
+```{r}
+table(lubridate::year(clean_data$onwardref$assessment_start_date),lubridate::month(clean_data$onwardref$assessment_start_date, label=TRUE)) %>% 
+  kable(caption = "Breakdown of Onward referrals made by year & month")
+```
+
+### Top onward referrals
+
+The top 10 most referred to agencies were:
+
+```{r}
+## table of all agencies and proportion of users who were referred to them
+agenciesAndProportions <-
+  clean_data$onwardref %>%
+  rename(Agency=answer) %>%
+  group_by(Agency) %>%
+  summarise(
+    NumUsersReferred = n_distinct(id),
+    ProportionUsersReferred = NumUsersReferred / (n_distinct(clean_data$onwardref$id))
+    )
+
+clean_data$onwardref %>%
+  rename(Agency=answer) %>%
+  count(Agency) %>%
+  rename(N=n) %>%
+  left_join(
+    agenciesAndProportions %>% select(Agency,"Proportion of all users referred"=ProportionUsersReferred), by="Agency"
+  ) %>%
+  arrange(desc(N)) %>%
+  mutate("Proportion of all users referred"=scales::percent(`Proportion of all users referred`)) %>%
+  slice(1:10) %>%
+  kable(caption = "Top 10 most referred to agencies", digits = 2)
+```
+
+## Time between HNA and review - how long are individuals receiving ICJ support?
+
+For this we first need to find individuals who had a HNA and a review, and we'll use their first HNA and their last Review
+
+```{r}
+# TODO: find a way of distinguishing individuals who had multiple episodes rather than just multiple HNAs/Reviews
+
+linked_hna_reviews <- 
+  clean_data$hna %>%
+  filter(id %in% clean_data$reviews$id) %>%  # keep only individuals who had a review
+  group_by(id) %>%
+  arrange(assessment_start_date) %>%
+  slice(1) %>%  # keep only first entry
+  ungroup %>%
+  left_join(
+    clean_data$reviews %>%
+      filter(id %in% .$id) %>%
+      group_by(id) %>%
+      arrange(desc(assessment_start_date)) %>%
+      slice(1) %>%  # keep only last entry
+      ungroup,
+    by = "id"
+    ) %>%
+  mutate(time_between_first_and_last_assessment = as.numeric(as.duration(interval(assessment_start_date.x,assessment_start_date.y)),unit="days"))
+
+linked_hna_reviews %>%
+  summarise(
+    N= n(),
+    Mean = mean(time_between_first_and_last_assessment),
+    SD = sd(time_between_first_and_last_assessment),
+    Median = median(time_between_first_and_last_assessment),
+    Q1 = quantile(time_between_first_and_last_assessment, 0.25),
+    Q3 = quantile(time_between_first_and_last_assessment, 0.75),
+    IQR = IQR(time_between_first_and_last_assessment)
+  ) %>%
+  kable(caption="Average days between first HNA assessment and last Review, over lifetime of ICJ.")
+
+linked_hna_reviews %>%
+  mutate(Year = year(assessment_start_date.x)) %>%
+  ggplot(data=., aes(x=time_between_first_and_last_assessment/7)) +
+  # scale_x_continuous(breaks = seq(0,2000, by=30)) +
+  facet_wrap(~Year, scales="free_y") +
+  geom_freqpoly(binwidth=4, fill=MacPaletteGreen[2], colour="grey10", ) +
+  theme_bw() +
+  labs(title = str_wrap("Frequency of number of weeks between first HNA and last Review for ICJ users, over lifetime of ICJ."), x = "Weeks between HNA and Review", y = "Frequency", subtitle = "Note: scales differ between panels!") +
+  NULL
+ 
+linked_hna_reviews %>%
+  group_by(Year_HNA = year(assessment_start_date.x)) %>%
+  summarise(
+    N= n(),
+    Mean = mean(time_between_first_and_last_assessment),
+    SD = sd(time_between_first_and_last_assessment),
+    Median = median(time_between_first_and_last_assessment),
+    Q1 = quantile(time_between_first_and_last_assessment, 0.25),
+    Q3 = quantile(time_between_first_and_last_assessment, 0.75),
+    IQR = IQR(time_between_first_and_last_assessment)
+  ) %>%
+  kable(caption="Average days between first HNA assessment and last Review, grouped by the year the of the first HNA.")
+```
+
+Note that the seemingly large gap between HNA and assessment is largely driven by the first year's cases!
+
+## Reviews
+
+### Average improvement at review
+
+```{r}
+clean_data$reviews %>%
+  mutate(
+    mean_before = rowMeans(select(., matches("^BEFORE_")),na.rm = TRUE),
+    mean_after = rowMeans(select(., matches("^AFTER_")),na.rm = TRUE),
+    mean_difference = mean_after - mean_before
+  ) %>%
+  summarise(
+    N = sum(!is.na(mean_difference)),
+    Mean = mean(mean_difference, na.rm=TRUE),
+    SD = sd(mean_difference, na.rm=TRUE),
+    Median = median(mean_difference, na.rm=TRUE),
+    Q1 = quantile(mean_difference, 0.25, na.rm=TRUE),
+    Q3 = quantile(mean_difference, 0.75, na.rm=TRUE),
+    IQR = IQR(mean_difference, na.rm=TRUE)
+  ) %>%
+  kable(caption = "Descriptive statistics of change of average concern score (over all concerns reported before & after) at Review over lifetime of ICJ. Negative score indicates improvement (=decrease in concern). N=number of change scores calculated.")
+```
+
+### Average improvement at review, by year of review
+
+```{r}
+clean_data$reviews %>%
+  mutate(
+    mean_before = rowMeans(select(., matches("^BEFORE_")),na.rm = TRUE),
+    mean_after = rowMeans(select(., matches("^AFTER_")),na.rm = TRUE),
+    mean_difference = mean_after - mean_before
+  ) %>%
+  group_by(Year=year(assessment_start_date)) %>%
+  summarise(
+    N = sum(!is.na(mean_difference)),
+    Mean = mean(mean_difference, na.rm=TRUE),
+    SD = sd(mean_difference, na.rm=TRUE),
+    Median = median(mean_difference, na.rm=TRUE),
+    Q1 = quantile(mean_difference, 0.25, na.rm=TRUE),
+    Q3 = quantile(mean_difference, 0.75, na.rm=TRUE),
+    IQR = IQR(mean_difference, na.rm=TRUE)
+  ) %>%
+  kable(caption = "Descriptive statistics of change of average concern score (over all concerns reported before & after) at Review, by year of Review. Negative score indicates improvement (=decrease in concern). N=number of change scores calculated.")
+```
+
+The average improvement in concern ranged between 2.87 to 4.60 depending on the year.
+
+## Outcomes
+
+### Proportion of data collected
+
+How many individuals were asked about outcomes? Note that this is a separate assessment to a review in most cases.
+
+```{r}
+clean_data$outcomes_agencies %>%
+  group_by(Year=year(assessment_start_date)) %>%
+  summarise(
+    N = n_distinct(id)
+  ) %>%
+  left_join(
+    clean_data$hna %>% group_by(Year=year(assessment_start_date)) %>% summarise(denominator=n_distinct(id)), by="Year"
+  ) %>%
+  mutate(
+    proportion = scales::percent(N/denominator)
+  ) %>%
+  rename(N_outcomes=N, N_HNAs=denominator) %>%
+  kable(caption = "Proportion: individuals who had Outcomes collected divided by individuals who had HNAs, by year of HNA and Outcome collection - note that because of the delay between referral and Outcome collection, these numbers don't correspond, and the proportion might be higher than 100% if more existing users had Outcomes collected than new users had HNAs.")
+```
+
+### Percentage services got in touch
+
+```{r}
+clean_data$outcomes_agencies %>%
+  count(agency_contact) %>%
+  mutate(
+    agency_contact=if_else(is.na(agency_contact),"missing",agency_contact),
+    proportion=scales::percent(n/sum(n))
+    ) %>%
+  kable(caption = "Percentage of services that got in touch after referral was made (out of services that were reported), over ICJ lifetime.")
+```
+
+```{r}
+clean_data$outcomes_agencies %>%
+  count(Year=year(assessment_start_date),agency_contact) %>%
+  group_by(Year) %>%
+  mutate(
+    agency_contact=if_else(is.na(agency_contact),"missing",agency_contact),
+    n_prop = paste0(n," (",scales::percent(n/sum(n)),")")
+    ) %>%
+  select(-n) %>%
+  pivot_wider(names_from=Year, values_from=n_prop) %>%
+  kable(caption = "Percentage of services that got in touch after referral was made (out of services that were reported), by year of reported outcomes.")
+```
+
+
+### Percentage uptake of onward referrals
+
+This is for individuals who in Outcomes reported attending an agency!
+
+```{r}
+clean_data$outcomes_agencies %>%
+  count(agency_what_happened) %>%
+  mutate(
+    agency_what_happened=if_else(is.na(agency_what_happened),"missing",agency_what_happened),
+    proportion=scales::percent(n/sum(n))
+    ) %>%
+  kable(caption = "Percentage of services attended after referral (out of services that were reported), over ICJ lifetime.")
+```
+
+```{r}
+clean_data$outcomes_agencies %>%
+  count(Year=year(assessment_start_date),agency_what_happened) %>%
+  group_by(Year) %>%
+  mutate(
+    agency_what_happened=if_else(is.na(agency_what_happened),"missing",agency_what_happened),
+    n_prop = paste0(n," (",scales::percent(n/sum(n)),")")
+    ) %>%
+  select(-n) %>%
+  pivot_wider(names_from=Year, values_from=n_prop) %>%
+  kable(caption = "Percentage of services attended after referral (out of services that were reported), by year of reported outcomes.")
+```
+
+
+### Rating of services
+
+We'll look separately at attended and non-attended services, since ratings were sometimes given regardless!
+
+```{r}
+clean_data$outcomes_agencies %>%
+  group_by(agency_what_happened) %>%
+  summarise(
+    How_many_ratings = sum(!is.na(agency_score)),
+    Percentage_rated = scales::percent(How_many_ratings/n()),
+    Mean = mean(agency_score, na.rm=TRUE),
+    SD = sd(agency_score, na.rm=TRUE),
+    Median = median(agency_score, na.rm=TRUE)
+    ) %>%
+  kable(caption = "Average ratings of services, broken down by attendance, over ICJ lifetime. 'How many ratings' refers to the number of scores collected overall; 'Percentage rated' refers to the proportion of agencies recorded that were given a rating - where the service did not get in touch or was not attended the percentage of ratings is lower, which is to be expected!")
+```
+
+```{r}
+clean_data$outcomes_agencies %>%
+  filter(agency_what_happened=="attended service") %>%
+  group_by(Year=year(assessment_start_date)) %>%
+  summarise(
+    How_many_ratings = sum(!is.na(agency_score)),
+    Percentage_rated = scales::percent(How_many_ratings/n()),
+    Mean = mean(agency_score, na.rm=TRUE),
+    SD = sd(agency_score, na.rm=TRUE),
+    Median = median(agency_score, na.rm=TRUE)
+    ) %>%
+  kable(caption = "Average ratings of services that were attended, by year. 'How many ratings' refers to the number of scores collected overall; 'Percentage rated' refers to the proportion of agencies recorded that were given a rating.")
+```
