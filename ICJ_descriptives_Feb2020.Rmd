@@ -1082,6 +1082,7 @@ clean_data$cases %>%
   group_by(Year) %>%
   mutate(n_prop = num_and_prop(n, sum(n))) %>%
   select(-n) %>%
+  arrange(Year) %>%
   pivot_wider(names_from=Year, values_from=n_prop, values_fill=list(n_prop="N<=10")) %>%
   kable(caption="Number of comorbidities reported in Case details, by year.")
 ```
@@ -1117,6 +1118,7 @@ clean_data$cases %>%
   ungroup %>%
   filter(comorbidity %in% top10_comorbidities$comorbidity) %>%
   select(-n) %>%
+  arrange(Year) %>%
   pivot_wider(names_from=Year, values_from=n_prop, values_fill=list(n_prop="N<=10")) %>%
   kable(caption="Annual frequency and proportion of all reported comorbidities per year for ten most commonly reported comorbidities over lifetime of ICJ.")
 ```
