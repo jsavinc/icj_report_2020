@@ -3,9 +3,7 @@ ICJ report 2020 script, to be used as a server that will automatically update fr
 
 This is hosted on a shiny server as a .Rmd file for a static webpage that summarises ICJ data.
 
-
-
-# Instructions for updating on shiny server
+# Instructions for installing on shiny server
 
 Stop shiny server
 
@@ -45,6 +43,8 @@ Check if it works, and delete backup if it does!
 sudo rm -R icj_report_2020_backup
 ```
 
+Don't forget to upload the data files also!
+
 ## Instructions in single block, copy-paste to terminal!
 
 ```
@@ -60,4 +60,14 @@ If it works, delete backup:
 
 ```
 sudo rm -R icj_report_2020_backup
+```
+
+# Instructions for updating on shiny server
+
+```
+sudo service shiny-service stop
+cd /srv/shiny-server/icj_report_2020
+sudo git pull
+sudo chown -R shiny:shiny /srv/shiny-server/icj_report_2020
+sudo service shiny-server start
 ```
