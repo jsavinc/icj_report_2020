@@ -1033,16 +1033,9 @@ clean_data$cases %>%
 
 ### Comorbidities
 
-How many people reported having comorbidities?
+#### How many people had comorbidities?
 
 ```{r}
-clean_data$cases %>%
-  mutate_at(vars(matches("co_morbid")), ~if_else(tolower(.)=="none", NA_character_, .)) %>%
-  mutate(num_comorbidities = rowSums(!is.na(select(., matches("co_morbid"))))) %>%
-  count(num_comorbidities) %>%
-  mutate(Proportion = scales::percent(n/sum(n))) %>%
-  kable(caption="Number of comorbidities reported in Case details, over lifetime of ICJ.")
-
 clean_data$cases %>%
   mutate_at(vars(matches("co_morbid")), ~if_else(tolower(.)=="none", NA_character_, .)) %>%
   mutate(num_comorbidities = rowSums(!is.na(select(., matches("co_morbid"))))) %>%
@@ -1055,20 +1048,33 @@ clean_data$cases %>%
   select(-one_or_more) %>%
   kable(caption="Any comorbidities reported in Case details, over lifetime of ICJ.")
 
-# clean_data$cases %>%
-#   pivot_longer(cols = matches("co_morbid"), names_to = "source", values_to = "comorbidity") %>%
-#   filter(!is.na(comorbidity)) %>%
-#   filter(comorbidity!="None") %>%
-#   select(id, comorbidity) %>%
-#   distinct %>%
-#   right_join(clean_data$cases, by="id") %>%
-#   mutate(has_comorbidity = if_else(!is.na(comorbidity), "Yes", "No")) %>%
-#   count(has_comorbidity, name ="N", sort= TRUE) %>%
-#   mutate(Proportion = scales::percent(N/sum(N))) %>%
-#   kable(caption="Proportion of individuals who have any co-morbidities (recorded in Case details as at least one listed co-morbidity), over lifetime of ICJ.")
+clean_data$cases %>%
+  mutate_at(vars(matches("co_morbid")), ~if_else(tolower(.)=="none", NA_character_, .)) %>%
+  mutate(num_comorbidities = rowSums(!is.na(select(., matches("co_morbid"))))) %>%
+  count(Year=year(assessment_start_date), num_comorbidities) %>%
+  group_by(Year,one_or_more=num_comorbidities>0) %>%
+  mutate(n=sum(n), num_comorbidities = if_else(one_or_more, "One or more", "None")) %>%
+  ungroup %>%
+  distinct %>%
+  group_by(Year) %>%
+  # mutate(Proportion = scales::percent(n/sum(n))) %>%
+  mutate(Proportion = num_and_prop(n, sum(n))) %>%
+  select(-one_or_more, -n) %>%
+  arrange(Year) %>%
+  pivot_wider(names_from=num_comorbidities, values_from = Proportion) %>%
+  kable(caption="Any comorbidities reported in Case details, by year.")
 ```
 
+#### How many comorbidities were reported?
+
 ```{r}
+clean_data$cases %>%
+  mutate_at(vars(matches("co_morbid")), ~if_else(tolower(.)=="none", NA_character_, .)) %>%
+  mutate(num_comorbidities = rowSums(!is.na(select(., matches("co_morbid"))))) %>%
+  count(num_comorbidities) %>%
+  mutate(Proportion = scales::percent(n/sum(n))) %>%
+  kable(caption="Number of comorbidities reported in Case details, over lifetime of ICJ.")
+
 clean_data$cases %>%
   mutate_at(vars(matches("co_morbid")), ~if_else(tolower(.)=="none", NA_character_, .)) %>%
   mutate(num_comorbidities = rowSums(!is.na(select(., matches("co_morbid"))))) %>%
@@ -1078,21 +1084,45 @@ clean_data$cases %>%
   select(-n) %>%
   pivot_wider(names_from=Year, values_from=n_prop, values_fill=list(n_prop="N<=10")) %>%
   kable(caption="Number of comorbidities reported in Case details, by year.")
-
-# clean_data$cases %>%
-#   pivot_longer(cols = matches("co_morbid"), names_to = "source", values_to = "comorbidity") %>%
-#   filter(!is.na(comorbidity)) %>%
-#   filter(comorbidity!="None") %>%
-#   select(id, comorbidity) %>%
-#   distinct %>%
-#   group_by(id) %>%
-#   summarise(num_comorbidities = n()) %>%
-#   right_join(clean_data$cases, by="id") %>%
-#   replace_na(list(num_comorbidities=0)) %>%
-#   count(num_comorbidities, name ="N", sort= TRUE) %>%
-#   mutate(Proportion = scales::percent(N/sum(N))) %>%
-#   kable(caption="Proportion of individuals who have any co-morbidities (recorded in Case details as at least one listed co-morbidity), over lifetime of ICJ.")
 ```
+
+#### Most common comorbidities
+
+
+```{r}
+clean_data$cases %>%
+  pivot_longer(cols = matches("co_morbid"), names_to = "source", values_to = "comorbidity", values_drop_na = TRUE) %>%
+  mutate(comorbidity = if_else(tolower(comorbidity)=="none", NA_character_, comorbidity)) %>%
+  filter(!is.na(comorbidity)) %>%
+  count(comorbidity, sort = TRUE) %>%
+  mutate(n_prop = num_and_prop(n, sum(n))) %>%
+  select(-n) %>%
+  kable(caption="Comorbidities, sorted by frequency & proportion of all comorbidities reported, over lifetime of ICJ.")
+
+top10_comorbidities <-
+  clean_data$cases %>%
+  pivot_longer(cols = matches("co_morbid"), names_to = "source", values_to = "comorbidity", values_drop_na = TRUE) %>%
+  mutate(comorbidity = if_else(tolower(comorbidity)=="none", NA_character_, comorbidity)) %>%
+  filter(!is.na(comorbidity)) %>%
+  count(comorbidity, sort = TRUE) %>%
+  slice(1:10)
+
+clean_data$cases %>%
+  pivot_longer(cols = matches("co_morbid"), names_to = "source", values_to = "comorbidity", values_drop_na = TRUE) %>%
+  mutate(comorbidity = if_else(tolower(comorbidity)=="none", NA_character_, comorbidity)) %>%
+  filter(!is.na(comorbidity)) %>%
+  count(Year=year(assessment_start_date), comorbidity, sort = TRUE) %>%
+  group_by(Year) %>%
+  mutate(n_prop = num_and_prop(n, sum(n))) %>%
+  ungroup %>%
+  filter(comorbidity %in% top10_comorbidities$comorbidity) %>%
+  select(-n) %>%
+  pivot_wider(names_from=Year, values_from=n_prop, values_fill=list(n_prop="N<=10")) %>%
+  kable(caption="Annual frequency and proportion of all reported comorbidities per year for ten most commonly reported comorbidities over lifetime of ICJ.")
+```
+
+
+
 
 ## Overall severity of concern
 
