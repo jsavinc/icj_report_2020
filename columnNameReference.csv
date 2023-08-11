@@ -1,0 +1,591 @@
+manualData,cf_post2014,standard
+,Assessment Subject ID,id
+,* assessment start date *,assessment_start_date
+,* assessment end date *,assessment_end_date
+,Answer,answer
+,Assessment Start Date,assessment_start_date
+,Assessment End Date,assessment_end_date
+,Assessment Subject Gender,assessment_subject_gender
+,* ageband at assessment *,ageband_at_assessment
+,* left 3 digits of postcode *,left_3_digits_of_postcode
+,* area team based on postcode *,area_team_based_on_postcode
+,SIMD Vigintiles,simd_vigintiles
+,* simd area *,simd_area
+,* first icj nha completed *,first_icj_nha_completed
+,* last icj nha completed *,last_icj_nha_completed
+,* rank from first to last completed hna *,rank_from_first_to_last_completed_hna
+,* (1.1.1) visit location *,visit_location
+,* (1.1.2) duration (in minutes) *,duration_in_minutes
+,* (2.1.1) stage in journey *,stage_in_journey
+,* (2.1.2) questions about diagnosis to discuss *,questions_about_diagnosis_to_discuss
+,* (2.1.3) physical concerns part 1 - breathing difficulties *,CONCERN_Breathing Difficulties
+,* (2.1.3) physical concerns part 1 - breathing difficulties summary *,SUMMARY_Breathing Difficulties
+,* (2.1.3) physical concerns part 1 - constipation *,CONCERN_Constipation
+,* (2.1.3) physical concerns part 1 - constipation summary *,SUMMARY_Constipation
+,* (2.1.3) physical concerns part 1 - diarrhoea *,CONCERN_Diarrhoea
+,* (2.1.3) physical concerns part 1 - diarrhoea summary *,SUMMARY_Diarrhoea
+,* (2.1.3) physical concerns part 1 - eating or appetite *,CONCERN_Eating/Appetite
+,* (2.1.3) physical concerns part 1 - eating or appetite summary *,SUMMARY_Eating/Appetite
+,* (2.1.3) physical concerns part 1 - high temperature or fever *,CONCERN_High Temperature/Fever
+,* (2.1.3) physical concerns part 1 - high temperature or fever summary *,SUMMARY_High Temperature/Fever
+,* (2.1.3) physical concerns part 1 - indigestion *,CONCERN_Indigestion
+,* (2.1.3) physical concerns part 1 - indigestion summary *,SUMMARY_Indigestion
+,* (2.1.3) physical concerns part 1 - nausea or vomiting *,CONCERN_Nausea/Vomiting
+,* (2.1.3) physical concerns part 1 - nausea or vomiting summary *,SUMMARY_Nausea/Vomiting
+,* (2.1.3) physical concerns part 1 - passing urine *,CONCERN_Passing Urine
+,* (2.1.3) physical concerns part 1 - passing urine summary *,SUMMARY_Passing Urine
+,* (2.1.3) physical concerns part 1 - sleep problems or nightmares *,CONCERN_Sleep Problems/Nightmares
+,* (2.1.3) physical concerns part 1 - sleep problems or nightmares summary *,SUMMARY_Sleep Problems/Nightmares
+,* (2.1.3) physical concerns part 1 - sore or dry mouth *,CONCERN_Sore/Dry Mouth
+,* (2.1.3) physical concerns part 1 - sore or dry mouth summary *,SUMMARY_Sore/Dry Mouth
+,* (2.1.3) physical concerns part 1 - swollen limb or tummy *,CONCERN_Swollen Tummy/Limb
+,* (2.1.3) physical concerns part 1 - swollen limb or tummy summary *,SUMMARY_Swollen Tummy/Limb
+,* (2.1.3) physical concerns part 1 - tired exhausted fatigued *,CONCERN_Tired/Exhausted/Fatigued
+,* (2.1.3) physical concerns part 1 - tired exhausted fatigued summary *,SUMMARY_Tired/Exhausted/Fatigued
+,* (2.1.4) physical concerns part 2 - dry itchy or sore skin *,CONCERN_Dry/Itchy/Sore Skin
+,* (2.1.4) physical concerns part 2 - dry itchy or sore skin summary *,SUMMARY_Dry/Itchy/Sore Skin
+,* (2.1.4) physical concerns part 2 - getting around walking *,CONCERN_Getting Around
+,* (2.1.4) physical concerns part 2 - getting around walking summary *,SUMMARY_Getting Around
+,* (2.1.4) physical concerns part 2 - hot flushes or sweating *,CONCERN_Hot Flushes/Sweating
+,* (2.1.4) physical concerns part 2 - hot flushes or sweating summary *,SUMMARY_Hot Flushes/Sweating
+,* (2.1.4) physical concerns part 2 - memory or concentration *,CONCERN_Memory or Concentration
+,* (2.1.4) physical concerns part 2 - memory or concentration summary *,SUMMARY_Memory or Concentration
+,* (2.1.4) physical concerns part 2 - my appearance *,CONCERN_My Appearance
+,* (2.1.4) physical concerns part 2 - my appearance summary *,SUMMARY_My Appearance
+,* (2.1.4) physical concerns part 2 - pain *,CONCERN_Pain
+,* (2.1.4) physical concerns part 2 - pain summary *,SUMMARY_Pain
+,* (2.1.4) physical concerns part 2 - sexuality *,CONCERN_Sexuality
+,* (2.1.4) physical concerns part 2 - sexuality summary *,SUMMARY_Sexuality
+,* (2.1.4) physical concerns part 2 - speech problems *,CONCERN_Speech Problems
+,* (2.1.4) physical concerns part 2 - speech problems summary *,SUMMARY_Speech Problems
+,* (2.1.4) physical concerns part 2 - taste sight hearing *,CONCERN_Taste/Sight/Hearing
+,* (2.1.4) physical concerns part 2 - taste sight hearing summary *,SUMMARY_Taste/Sight/Hearing
+,* (2.1.4) physical concerns part 2 - tingling in hands or feet *,CONCERN_Tingling in Hands/Feet
+,* (2.1.4) physical concerns part 2 - tingling in hands or feet summary *,SUMMARY_Tingling in Hands/Feet
+,* (2.1.4) physical concerns part 2 - unplanned changes in weight *,CONCERN_Unplanned Changes in Weight
+,* (2.1.4) physical concerns part 2 - unplanned changes in weight summary *,SUMMARY_Unplanned Changes in Weight
+,* (2.1.5) practical concerns - caring responsibilities *,CONCERN_Caring Responsibilities
+,* (2.1.5) practical concerns - caring responsibilities summary *,SUMMARY_Caring Responsibilities
+,* (2.1.5) practical concerns - contact communication with nhs staff *,CONCERN_Contact/Communication with NHS Staff
+,* (2.1.5) practical concerns - contact communication with nhs staff summary *,SUMMARY_Contact/Communication with NHS Staff
+,* (2.1.5) practical concerns - housework or shopping *,CONCERN_Housework or Shopping
+,* (2.1.5) practical concerns - housework or shopping summary *,SUMMARY_Housework or Shopping
+,* (2.1.5) practical concerns - insurance and travel *,CONCERN_Insurance and Travel
+,* (2.1.5) practical concerns - insurance and travel summary *,SUMMARY_Insurance and Travel
+,* (2.1.5) practical concerns - money or housing *,CONCERN_Money or Housing
+,* (2.1.5) practical concerns - money or housing summary *,SUMMARY_Money or Housing
+,* (2.1.5) practical concerns - preparing meals and drinks *,CONCERN_Preparing Meals/drinks
+,* (2.1.5) practical concerns - preparing meals and drinks summary *,SUMMARY_Preparing Meals/drinks
+,* (2.1.5) practical concerns - transport or parking *,CONCERN_Transport or Parking
+,* (2.1.5) practical concerns - transport or parking summary *,SUMMARY_Transport or Parking
+,* (2.1.5) practical concerns - washing and dressing *,CONCERN_Washing and Dressing
+,* (2.1.5) practical concerns - washing and dressing summary *,SUMMARY_Washing and Dressing
+,* (2.1.5) practical concerns - work and education *,CONCERN_Work and Education
+,* (2.1.5) practical concerns - work and education summary *,SUMMARY_Work and Education
+,* (2.1.6) family and relationship concerns - children *,CONCERN_Children
+,* (2.1.6) family and relationship concerns - children summary *,SUMMARY_Children
+,* (2.1.6) family and relationship concerns - other relatives or friends *,CONCERN_Other Relatives/Friends
+,* (2.1.6) family and relationship concerns - other relatives or friends summary *,SUMMARY_Other Relatives/Friends
+,* (2.1.6) family and relationship concerns - partner *,CONCERN_Partner
+,* (2.1.6) family and relationship concerns - partner summary *,SUMMARY_Partner
+,* (2.1.7) emotional concerns - anger or frustration *,CONCERN_Anger/Frustration
+,* (2.1.7) emotional concerns - anger or frustration summary *,SUMMARY_Anger/Frustration
+,* (2.1.7) emotional concerns - difficulty making plans *,CONCERN_Difficulty Making Plans
+,* (2.1.7) emotional concerns - difficulty making plans summary *,SUMMARY_Difficulty Making Plans
+,* (2.1.7) emotional concerns - guilt *,CONCERN_Guilt
+,* (2.1.7) emotional concerns - guilt summary *,SUMMARY_Guilt
+,* (2.1.7) emotional concerns - hopelessness *,CONCERN_Hopelessness
+,* (2.1.7) emotional concerns - hopelessness summary *,SUMMARY_Hopelessness
+,* (2.1.7) emotional concerns - loneliness or isolation *,CONCERN_Loneliness/Isolation
+,* (2.1.7) emotional concerns - loneliness or isolation summary *,SUMMARY_Loneliness/Isolation
+,* (2.1.7) emotional concerns - loss of interest or activities *,CONCERN_Loss of Interest in Activities
+,* (2.1.7) emotional concerns - loss of interest or activities summary *,SUMMARY_Loss of Interest in Activities
+,* (2.1.7) emotional concerns - sadness or depression *,CONCERN_Sadness or Depression
+,* (2.1.7) emotional concerns - sadness or depression summary *,SUMMARY_Sadness or Depression
+,* (2.1.7) emotional concerns - unable to express feelings *,CONCERN_Unable to Express Feelings
+,* (2.1.7) emotional concerns - unable to express feelings summary *,SUMMARY_Unable to Express Feelings
+,* (2.1.7) emotional concerns - worry fear or anxiety *,CONCERN_Worry/Fear/Anxiety
+,* (2.1.7) emotional concerns - worry fear or anxiety summary *,SUMMARY_Worry/Fear/Anxiety
+,* (2.1.8) spiritual or religious concerns - loss of faith or other spiritual concern *,CONCERN_Loss of Faith or Spiritual Concern
+,* (2.1.8) spiritual or religious concerns - loss of faith or other spiritual concern summary *,SUMMARY_Loss of Faith or Spiritual Concern
+,* (2.1.8) spiritual or religious concerns - loss of meaning or purpose of life *,CONCERN_Loss of Meaning or Purpose of Life
+,* (2.1.8) spiritual or religious concerns - loss of meaning or purpose of life summary *,SUMMARY_Loss of Meaning or Purpose of Life
+,* (2.1.8) spiritual or religious concerns - not being at peace with or feeling regret about the past *,CONCERN_Not Being at Peace with or Feeling Regret about the Past
+,* (2.1.8) spiritual or religious concerns - not being at peace with or feeling regret about the past summary *,SUMMARY_Not Being at Peace with or Feeling Regret about the Past
+,* (2.1.9) lifestyle or information needs - alcohol or drugs *,CONCERN_Alcohol or Drugs
+,* (2.1.9) lifestyle or information needs - alcohol or drugs summary *,SUMMARY_Alcohol or Drugs
+,* (2.1.9) lifestyle or information needs - complementary therapies *,CONCERN_Complementary Therapies
+,* (2.1.9) lifestyle or information needs - complementary therapies summary *,SUMMARY_Complementary Therapies
+,* (2.1.9) lifestyle or information needs - diet and nutrition *,CONCERN_Diet and Nutrition
+,* (2.1.9) lifestyle or information needs - diet and nutrition summary *,SUMMARY_Diet and Nutrition
+,* (2.1.9) lifestyle or information needs - exercise and activity *,CONCERN_Exercise and Activity
+,* (2.1.9) lifestyle or information needs - exercise and activity summary *,SUMMARY_Exercise and Activity
+,* (2.1.9) lifestyle or information needs - hobbies *,CONCERN_Hobbies
+,* (2.1.9) lifestyle or information needs - hobbies summary *,SUMMARY_Hobbies
+,* (2.1.9) lifestyle or information needs - other *,CONCERN_Other
+,* (2.1.9) lifestyle or information needs - other summary *,SUMMARY_Other
+,* (2.1.9) lifestyle or information needs - smoking *,CONCERN_Smoking
+,* (2.1.9) lifestyle or information needs - smoking summary *,SUMMARY_Smoking
+,* (2.1.9) lifestyle or information needs - sun protection *,CONCERN_Sun Protection
+,* (2.1.9) lifestyle or information needs - sun protection summary *,SUMMARY_Sun Protection
+,* (2.1.9) lifestyle or information needs - support groups *,CONCERN_Support Groups
+,* (2.1.9) lifestyle or information needs - support groups summary *,SUMMARY_Support Groups
+,* (2.1.10) overall score for concern over last week *,overall_score_for_concern_over_last_week
+,* (3.1.1) referral to housing provider to be arranged *,referral_to_housing_provider_to_be_arranged
+,* (3.1.2) housing issue *,housing_issue
+,* (3.1.3) home care support required *,home_care_support_required
+,* (3.1.5) ot assessment required *,ot_assessment_required
+,* (3.1.7) referral to long term conditions team required *,referral_to_long_term_conditions_team_required
+,* (3.1.29) hna_care plan letter sent to client *,hna_care_plan_letter_sent_to_client
+,* (3.2.1) social work involvement - addictions *,social_work_involvement_addictions
+,* (3.2.1) social work involvement - adult support and protection *,social_work_involvement_adult_support_and_protection
+,* (3.2.1) social work involvement - adults with incapacity *,social_work_involvement_adults_with_incapacity
+,* (3.2.1) social work involvement - care homes *,social_work_involvement_care_homes
+,* (3.2.1) social work involvement - carers assessment *,social_work_involvement_carers_assessment
+,* (3.2.1) social work involvement - carers team *,social_work_involvement_carers_team
+,* (3.2.1) social work involvement - children and families *,social_work_involvement_children_and_families
+,* (3.2.1) social work involvement - criminal justice *,social_work_involvement_criminal_justice
+,* (3.2.1) social work involvement - day care *,social_work_involvement_day_care
+,* (3.2.1) social work involvement - homeless *,social_work_involvement_homeless
+,* (3.2.1) social work involvement - housing options *,social_work_involvement_housing_options
+,* (3.2.1) social work involvement - learning disabilities *,social_work_involvement_learning_disabilities
+,* (3.2.1) social work involvement - mental health *,social_work_involvement_mental_health
+,* (3.2.1) social work involvement - occupational therapy *,social_work_involvement_occupational_therapy
+,* (3.2.1) social work involvement - older people *,social_work_involvement_older_people
+,* (3.2.1) social work involvement - physical disabilities *,social_work_involvement_physical_disabilities
+,* (3.2.1) social work involvement - sensory services *,social_work_involvement_sensory_services
+,* (3.2.1) social work involvement - support at home *,social_work_involvement_support_at_home
+,* (3.2.2) cordia involvement - befriending service *,cordia_involvement_befriending_service
+,* (3.2.2) cordia involvement - children and families *,cordia_involvement_children_and_families
+,* (3.2.2) cordia involvement - community alarms *,cordia_involvement_community_alarms
+,* (3.2.2) cordia involvement - equipu *,cordia_involvement_equipu
+,* (3.2.2) cordia involvement - help at home *,cordia_involvement_help_at_home
+,* (3.2.2) cordia involvement - home care *,cordia_involvement_home_care
+,* (3.2.2) cordia involvement - kitchen *,cordia_involvement_kitchen
+,* (3.2.2) cordia involvement - personalisation *,cordia_involvement_personalisation
+,* (3.2.2) cordia involvement - reablement *,cordia_involvement_reablement
+,* (3.2.2) cordia involvement - transport and support service *,cordia_involvement_transport_and_support_service
+,* (3.2.3) glasgow life involvement - adult literacy and numeracy classes *,glasgow_life_involvement_adult_literacy_and_numeracy_classes
+,* (3.2.3) glasgow life involvement - arts *,glasgow_life_involvement_arts
+,* (3.2.3) glasgow life involvement - canmove *,glasgow_life_involvement_canmove
+,* (3.2.3) glasgow life involvement - communities *,glasgow_life_involvement_communities
+,* (3.2.3) glasgow life involvement - digital learning classes *,glasgow_life_involvement_digital_learning_classes
+,* (3.2.3) glasgow life involvement - gentle movement *,glasgow_life_involvement_gentle_movement
+,* (3.2.3) glasgow life involvement - glasgow club *,glasgow_life_involvement_glasgow_club
+,* (3.2.3) glasgow life involvement - glasgow life volunteer *,glasgow_life_involvement_glasgow_life_volunteer
+,* (3.2.3) glasgow life involvement - jogging *,glasgow_life_involvement_jogging
+,* (3.2.3) glasgow life involvement - library reading group *,glasgow_life_involvement_library_reading_group
+,* (3.2.3) glasgow life involvement - live active *,glasgow_life_involvement_live_active
+,* (3.2.3) glasgow life involvement - museums *,glasgow_life_involvement_museums
+,* (3.2.3) glasgow life involvement - music *,glasgow_life_involvement_music
+,* (3.2.3) glasgow life involvement - revitalise *,glasgow_life_involvement_revitalise
+,* (3.2.3) glasgow life involvement - vitality *,glasgow_life_involvement_vitality
+,* (3.2.3) glasgow life involvement - walking *,glasgow_life_involvement_walking
+,Assessment Outcome Description,assessment_outcome_description
+,SIMD Vigintile,simd_vigintile
+,Assessment_ID,assessment_id
+,* first icj add visit completed *,first_icj_add_visit_completed
+,* last icj add visit completed *,last_icj_add_visit_completed
+,* rank from first to last completed add visit *,rank_from_first_to_last_completed_add_visit
+,* (1.1.1) visit location (ni inc) *,visit_location_ni_inc
+,* (2.1.1) reason for additional visit (ni inc) *,reason_for_additional_visit_ni_inc
+,* last icj case details completed *,last_icj_case_details_completed
+,* first icj case details completed *,first_icj_case_details_completed
+,* ranking (from first to last completed icj case details) *,ranking_from_first_to_last_completed_icj_case_details
+,* (1.1.3) marital status (inc ni) *,marital_status_inc_ni
+,* (3.1.1) employment status (inc ni) *,employment_status_inc_ni
+,* (3.1.2) client a partner organisation gcc employee (inc ni) *,client_a_partner_organisation_gcc_employee_inc_ni
+,* (3.1.3) are there any hr issues (inc ni) *,are_there_any_hr_issues_inc_ni
+,* (3.1.4) do you have literacy issues (inc ni) *,do_you_have_literacy_issues_inc_ni
+,* (3.1.5) are you computer literate (inc ni) *,are_you_computer_literate_inc_ni
+,* (4.1.1) mobility issues (inc ni) *,mobility_issues_inc_ni
+,* (4.1.2) caring responsibilities (inc ni) *,caring_responsibilities_inc_ni
+,* (4.1.3) benefit from money/debt advice (inc ni) *,benefit_from_moneydebt_advice_inc_ni
+,* (4.1.4) mental health issues (inc ni) *,mental_health_issues_inc_ni
+,* (4.1.5) consider yourself to have a disability (inc ni) *,consider_yourself_to_have_a_disability_inc_ni
+,* (5.1.1) primary diagnosis (one) *,primary_diagnosis_one
+,* (5.1.1) primary diagnosis (two) *,primary_diagnosis_two
+,* (5.1.1) primary diagnosis (three) *,primary_diagnosis_three
+,* (5.1.2) additional diagnosis (one) *,additional_diagnosis_one
+,* (5.1.2) additional diagnosis (two) *,additional_diagnosis_two
+,* (5.1.2) additional diagnosis (three) *,additional_diagnosis_three
+,* (5.1.3) metastasis 1 *,metastasis_1
+,* (5.1.4) metastasis 2 *,metastasis_2
+,* (5.1.5) co morbidity 1 *,co_morbidity_1
+,* (5.1.6) co morbidity 2 *,co_morbidity_2
+,* (5.1.7) co morbidity 3 *,co_morbidity_3
+,* (5.1.8) co morbidity 4 *,co_morbidity_4
+,* (5.1.10) is there a history of cancer (inc ni) *,is_there_a_history_of_cancer_inc_ni
+,* (6.1.5) was carer identified (inc ni) *,was_carer_identified_inc_ni
+,* (6.1.7) was carer assessment offered (inc ni) *,was_carer_assessment_offered_inc_ni
+,* (6.1.9) was carer assessment declined (inc ni) *,was_carer_assessment_declined_inc_ni
+,* (6.1.11) period of time caring for client (inc ni) (only applies where a carer has been identified) *,period_of_time_caring_for_client_inc_ni_only_applies_where_a_carer_has_been_identified
+,* (6.1.12) receive employability advice (inc ni) *,receive_employability_advice_inc_ni
+,* (6.1.14) receive end of life planning information (inc ni) *,receive_end_of_life_planning_information_inc_ni
+,* (7.1.1) housing - type (inc ni) *,housing_type_inc_ni
+,* (7.1.1) housing - tenure (inc ni) *,housing_tenure_inc_ni
+,* (7.1.1) housing - hh composition (inc ni) *,housing_hh_composition_inc_ni
+,* (7.1.8) landlord name *,landlord_name
+,* (8.1.1) registered social landlord *,registered_social_landlord
+,* last evaluation completed *,last_evaluation_completed
+,* first evaluation completed *,first_evaluation_completed
+,* ranking (from first to last completed icj evaluation) *,ranking_from_first_to_last_completed_icj_evaluation
+,* (1.1.1) hear about service = received a letter through the post (inc ni) *,hear_about_service_received_a_letter_through_the_post_inc_ni
+,* (1.1.2) hear about service = from my gp (inc ni) *,hear_about_service_from_my_gp_inc_ni
+,* (1.1.3) hear about service = from health professional (other than gp) (inc ni) *,hear_about_service_from_health_professional_other_than_gp_inc_ni
+,* (1.1.4) hear about service = benefits advisor (inc ni) *,hear_about_service_benefits_advisor_inc_ni
+,* (1.1.5) hear about service = nhs or gcc employee (inc ni) *,hear_about_service_nhs_or_gcc_employee_inc_ni
+,* (1.1.6) hear about service = other (inc ni) *,hear_about_service_other_inc_ni
+,* (1.1.9) icj experience = easy to make an appointment (inc ni) *,icj_experience_easy_to_make_an_appointment_inc_ni
+,* (1.1.10) icj experience = the icj officer listened to me (inc ni) *,icj_experience_the_icj_officer_listened_to_me_inc_ni
+,* (1.1.11) icj experience = support was appropriate to needs (inc ni) *,icj_experience_support_was_appropriate_to_needs_inc_ni
+,* (1.1.12) icj experience = if concerns feel they were reduced (inc ni) *,icj_experience_if_concerns_feel_they_were_reduced_inc_ni
+,* (1.1.13) icj experience = know who to contact if any questions or concerns (inc ni) *,icj_experience_know_who_to_contact_if_any_questions_or_concerns_inc_ni
+,* (1.1.14) icj experience = helped reduce feelings of isolation (inc ni) *,icj_experience_helped_reduce_feelings_of_isolation_inc_ni
+,* (1.1.15) icj experience = better informed to discuss my diagnosis (inc ni) *,icj_experience_better_informed_to_discuss_my_diagnosis_inc_ni
+,* (2.1.1) sought support needed = internet (inc ni) *,sought_support_needed_internet_inc_ni
+,* (2.1.2) sought support needed = information leaflets (inc ni) *,sought_support_needed_information_leaflets_inc_ni
+,* (2.1.3) sought support needed = gp (inc ni) *,sought_support_needed_gp_inc_ni
+,* (2.1.4) sought support needed = friends_family (inc ni) *,sought_support_needed_friends_family_inc_ni
+,* (2.1.5) sought support needed =professional (other than gp) (inc ni) *,sought_support_needed_professional_other_than_gp_inc_ni
+,* (2.1.6) sought support needed =complementary or alternative therapies (inc ni) *,sought_support_needed_complementary_or_alternative_therapies_inc_ni
+,* (2.1.7) sought support needed = chaplain (inc ni) *,sought_support_needed_chaplain_inc_ni
+,* (2.1.8) sought support needed = my employer (inc ni) *,sought_support_needed_my_employer_inc_ni
+,* (2.1.9) sought support needed = social worker (inc ni) *,sought_support_needed_social_worker_inc_ni
+,* (2.1.10) sought support needed = charity (inc ni) *,sought_support_needed_charity_inc_ni
+,* (2.1.11) sought support needed = telephone support line (inc ni) *,sought_support_needed_telephone_support_line_inc_ni
+,* (2.1.12) sought support needed = no idea (inc ni) *,sought_support_needed_no_idea_inc_ni
+,* (2.1.13) sought support needed = other (inc ni) *,sought_support_needed_other_inc_ni
+,* (2.1.16) support from icj has = made me feel supported (inc ni) *,support_from_icj_has_made_me_feel_supported_inc_ni
+,* (2.1.17) support from icj has = improved my quality of life (inc ni) *,support_from_icj_has_improved_my_quality_of_life_inc_ni
+,* (2.1.18) support from icj has = allowed self manage and regain control (inc ni) *,support_from_icj_has_allowed_self_manage_and_regain_control_inc_ni
+,* (2.1.19) support from icj has = reduced stress (inc ni) *,support_from_icj_has_reduced_stress_inc_ni
+,* (2.1.20) support from icj has = made life easier (inc ni) *,support_from_icj_has_made_life_easier_inc_ni
+,* (3.1.1) link officer informed me about services that could help (inc ni) *,link_officer_informed_me_about_services_that_could_help_inc_ni
+,* (3.1.2) link officer made it easy for me to express concerns (inc ni) *,link_officer_made_it_easy_for_me_to_express_concerns_inc_ni
+,* (3.1.3) link officer made it easy to contact them (inc ni) *,link_officer_made_it_easy_to_contact_them_inc_ni
+,* (3.1.4) link officer took concerns seriously to find solutions (inc ni) *,link_officer_took_concerns_seriously_to_find_solutions_inc_ni
+,* (3.1.5) link officer respectful of wishes (inc ni) *,link_officer_respectful_of_wishes_inc_ni
+,* (3.1.6) link officer referred me to services appropriate to needs (inc ni) *,link_officer_referred_me_to_services_appropriate_to_needs_inc_ni
+,* (3.1.7) link officer made me aware of support and services (inc ni) *,link_officer_made_me_aware_of_support_and_services_inc_ni
+,* (3.1.8) link officer encouraged me to raise issues with professionals (inc ni) *,link_officer_encouraged_me_to_raise_issues_with_professionals_inc_ni
+,* (3.1.9) link officer encouraged me to use self management info (inc ni) *,link_officer_encouraged_me_to_use_self_management_info_inc_ni
+,* (3.1.10) link officer able to provide support to relatives or friends (inc ni) *,link_officer_able_to_provide_support_to_relatives_or_friends_inc_ni
+,* (3.1.12) quality of advice and support from icj (inc ni) *,quality_of_advice_and_support_from_icj_inc_ni
+,* first icj review completed *,first_icj_review_completed
+,* last icj review completed *,last_icj_review_completed
+,* rank from first to last completed icj review *,rank_from_first_to_last_completed_icj_review
+,* (1.1.1) physical concerns - breathing difficulties (before) *,BEFORE_Breathing Difficulties
+,* (1.1.1) physical concerns - breathing difficulties (after) *,AFTER_Breathing Difficulties
+,* (1.1.1) physical concerns - breathing difficulties numeric difference *,DIFF_NUM_Breathing Difficulties
+,* (1.1.1) physical concerns - breathing difficulties category difference *,DIFF_CAT_Breathing Difficulties
+,* (1.1.1) physical concerns - passing urine (before) *,BEFORE_Passing Urine
+,* (1.1.1) physical concerns - passing urine (after) *,AFTER_Passing Urine
+,* (1.1.1) physical concerns - passing urine numeric difference *,DIFF_NUM_Passing Urine
+,* (1.1.1) physical concerns - passing urine category difference *,DIFF_CAT_Passing Urine
+,* (1.1.1) physical concerns - constipation (before) *,BEFORE_Constipation
+,* (1.1.1) physical concerns - constipation (after) *,AFTER_Constipation
+,* (1.1.1) physical concerns - constipation numeric difference *,DIFF_NUM_Constipation
+,* (1.1.1) physical concerns - constipation category difference *,DIFF_CAT_Constipation
+,* (1.1.1) physical concerns - diarrhoea (before) *,BEFORE_Diarrhoea
+,* (1.1.1) physical concerns - diarrhoea (after) *,AFTER_Diarrhoea
+,* (1.1.1) physical concerns - diarrhoea numeric difference *,DIFF_NUM_Diarrhoea
+,* (1.1.1) physical concerns - diarrhoea category difference *,DIFF_CAT_Diarrhoea
+,* (1.1.1) physical concerns - eating or appetite (before) *,BEFORE_Eating/Appetite
+,* (1.1.1) physical concerns - eating or appetite (after) *,AFTER_Eating/Appetite
+,* (1.1.1) physical concerns - eating or appetite numeric difference *,DIFF_NUM_Eating/Appetite
+,* (1.1.1) physical concerns - eating or appetite category difference *,DIFF_CAT_Eating/Appetite
+,* (1.1.1) physical concerns - indigestion (before) *,BEFORE_Indigestion
+,* (1.1.1) physical concerns - indigestion (after) *,AFTER_Indigestion
+,* (1.1.1) physical concerns - indigestion numeric difference *,DIFF_NUM_Indigestion
+,* (1.1.1) physical concerns - indigestion category difference *,DIFF_CAT_Indigestion
+,* (1.1.1) physical concerns - sore or dry mouth (before) *,BEFORE_Sore/Dry Mouth
+,* (1.1.1) physical concerns - sore or dry mouth (after) *,AFTER_Sore/Dry Mouth
+,* (1.1.1) physical concerns - sore or dry mouth numeric difference *,DIFF_NUM_Sore/Dry Mouth
+,* (1.1.1) physical concerns - sore or dry mouth category difference *,DIFF_CAT_Sore/Dry Mouth
+,* (1.1.1) physical concerns - nausea or vomiting (before) *,BEFORE_Nausea/Vomiting
+,* (1.1.1) physical concerns - nausea or vomiting (after) *,AFTER_Nausea/Vomiting
+,* (1.1.1) physical concerns - nausea or vomiting numeric difference *,DIFF_NUM_Nausea/Vomiting
+,* (1.1.1) physical concerns - nausea or vomiting category difference *,DIFF_CAT_Nausea/Vomiting
+,* (1.1.2) physical concerns - sleep problems or nightmares (before) *,BEFORE_Sleep Problems/Nightmares
+,* (1.1.2) physical concerns - sleep problems or nightmares (after) *,AFTER_Sleep Problems/Nightmares
+,* (1.1.2) physical concerns - sleep problems or nightmares numeric difference *,DIFF_NUM_Sleep Problems/Nightmares
+,* (1.1.2) physical concerns - sleep problems or nightmares category difference *,DIFF_CAT_Sleep Problems/Nightmares
+,* (1.1.2) physical concerns - tired exhausted fatigued (before) *,BEFORE_Tired/Exhausted/Fatigued
+,* (1.1.2) physical concerns - tired exhausted fatigued (after) *,AFTER_Tired/Exhausted/Fatigued
+,* (1.1.2) physical concerns - tired exhausted fatigued numeric difference *,DIFF_NUM_Tired/Exhausted/Fatigued
+,* (1.1.2) physical concerns - tired exhausted fatigued category difference *,DIFF_CAT_Tired/Exhausted/Fatigued
+,* (1.1.2) physical concerns - swollen limb or tummy (before) *,BEFORE_Swollen Tummy/Limb
+,* (1.1.2) physical concerns - swollen limb or tummy (after) *,AFTER_Swollen Tummy/Limb
+,* (1.1.2) physical concerns - swollen limb or tummy numeric difference *,DIFF_NUM_Swollen Tummy/Limb
+,* (1.1.2) physical concerns - swollen limb or tummy category difference *,DIFF_CAT_Swollen Tummy/Limb
+,* (1.1.2) physical concerns - high temperature or fever (before) *,BEFORE_High Temperature/Fever
+,* (1.1.2) physical concerns - high temperature or fever (after) *,AFTER_High Temperature/Fever
+,* (1.1.2) physical concerns - high temperature or fever numeric difference *,DIFF_NUM_High Temperature/Fever
+,* (1.1.2) physical concerns - high temperature or fever category difference *,DIFF_CAT_High Temperature/Fever
+,* (1.1.2) physical concerns - getting around walking (before) *,BEFORE_Getting Around
+,* (1.1.2) physical concerns - getting around walking (after) *,AFTER_Getting Around
+,* (1.1.2) physical concerns - getting around walking numeric difference *,DIFF_NUM_Getting Around
+,* (1.1.2) physical concerns - getting around walking category difference *,DIFF_CAT_Getting Around
+,* (1.1.2) physical concerns - tingling in hands or feet (before) *,BEFORE_Tingling in Hands/Feet
+,* (1.1.2) physical concerns - tingling in hands or feet (after) *,AFTER_Tingling in Hands/Feet
+,* (1.1.2) physical concerns - tingling in hands or feet numeric difference *,DIFF_NUM_Tingling in Hands/Feet
+,* (1.1.2) physical concerns - tingling in hands or feet category difference *,DIFF_CAT_Tingling in Hands/Feet
+,* (1.1.2) physical concerns - pain (before) *,BEFORE_Pain
+,* (1.1.2) physical concerns - pain (after) *,AFTER_Pain
+,* (1.1.2) physical concerns - pain numeric difference *,DIFF_NUM_Pain
+,* (1.1.2) physical concerns - pain category difference *,DIFF_CAT_Pain
+,* (1.1.2) physical concerns - hot flushes or sweating (before) *,BEFORE_Hot Flushes/Sweating
+,* (1.1.2) physical concerns - hot flushes or sweating (after) *,AFTER_Hot Flushes/Sweating
+,* (1.1.2) physical concerns - hot flushes or sweating numeric difference *,DIFF_NUM_Hot Flushes/Sweating
+,* (1.1.2) physical concerns - hot flushes or sweating category difference *,DIFF_CAT_Hot Flushes/Sweating
+,* (1.1.3) physical concerns - dry itchy or sore skin (before) *,BEFORE_Dry/Itchy/Sore Skin
+,* (1.1.3) physical concerns - dry itchy or sore skin (after) *,AFTER_Dry/Itchy/Sore Skin
+,* (1.1.3) physical concerns - dry itchy or sore skin numeric difference *,DIFF_NUM_Dry/Itchy/Sore Skin
+,* (1.1.3) physical concerns - dry itchy or sore skin category difference *,DIFF_CAT_Dry/Itchy/Sore Skin
+,* (1.1.3) physical concerns - wound care after surgery (before) *,BEFORE_Wound Care after Surgery
+,* (1.1.3) physical concerns - wound care after surgery (after) *,AFTER_Wound Care after Surgery
+,* (1.1.3) physical concerns - wound care after surgery numeric difference *,DIFF_NUM_Wound Care after Surgery
+,* (1.1.3) physical concerns - wound care after surgery category difference *,DIFF_CAT_Wound Care after Surgery
+,* (1.1.3) physical concerns - memory or concentration (before) *,BEFORE_Memory or Concentration
+,* (1.1.3) physical concerns - memory or concentration (after) *,AFTER_Memory or Concentration
+,* (1.1.3) physical concerns - memory or concentration numeric difference *,DIFF_NUM_Memory or Concentration
+,* (1.1.3) physical concerns - memory or concentration category difference *,DIFF_CAT_Memory or Concentration
+,* (1.1.3) physical concerns - taste sight hearing (before) *,BEFORE_Taste/Sight/Hearing
+,* (1.1.3) physical concerns - taste sight hearing (after) *,AFTER_Taste/Sight/Hearing
+,* (1.1.3) physical concerns - taste sight hearing numeric difference *,DIFF_NUM_Taste/Sight/Hearing
+,* (1.1.3) physical concerns - taste sight hearing category difference *,DIFF_CAT_Taste/Sight/Hearing
+,* (1.1.3) physical concerns - speech problems (before) *,BEFORE_Speech Problems
+,* (1.1.3) physical concerns - speech problems (after) *,AFTER_Speech Problems
+,* (1.1.3) physical concerns - speech problems numeric difference *,DIFF_NUM_Speech Problems
+,* (1.1.3) physical concerns - speech problems category difference *,DIFF_CAT_Speech Problems
+,* (1.1.3) physical concerns - my appearance (before) *,BEFORE_My Appearance
+,* (1.1.3) physical concerns - my appearance (after) *,AFTER_My Appearance
+,* (1.1.3) physical concerns - my appearance numeric difference *,DIFF_NUM_My Appearance
+,* (1.1.3) physical concerns - my appearance category difference *,DIFF_CAT_My Appearance
+,* (1.1.3) physical concerns - sexuality (before) *,BEFORE_Sexuality
+,* (1.1.3) physical concerns - sexuality (after) *,AFTER_Sexuality
+,* (1.1.3) physical concerns - sexuality numeric difference *,DIFF_NUM_Sexuality
+,* (1.1.3) physical concerns - sexuality category difference *,DIFF_CAT_Sexuality
+,* (1.1.3) physical concerns - unplanned changes in weight (before) *,BEFORE_Unplanned Changes in Weight
+,* (1.1.3) physical concerns - unplanned changes in weight (after) *,AFTER_Unplanned Changes in Weight
+,* (1.1.3) physical concerns - unplanned changes in weight numeric difference *,DIFF_NUM_Unplanned Changes in Weight
+,* (1.1.3) physical concerns - unplanned changes in weight category difference *,DIFF_CAT_Unplanned Changes in Weight
+,* (1.1.4) practical concerns - caring responsibilities (before) *,BEFORE_Caring Responsibilities
+,* (1.1.4) practical concerns - caring responsibilities (after) *,AFTER_Caring Responsibilities
+,* (1.1.4) practical concerns - caring responsibilities numeric difference *,DIFF_NUM_Caring Responsibilities
+,* (1.1.4) practical concerns - caring responsibilities category difference *,DIFF_CAT_Caring Responsibilities
+,* (1.1.4) practical concerns - work and education (before) *,BEFORE_Work and Education
+,* (1.1.4) practical concerns - work and education (after) *,AFTER_Work and Education
+,* (1.1.4) practical concerns - work and education numeric difference *,DIFF_NUM_Work and Education
+,* (1.1.4) practical concerns - work and education category difference *,DIFF_CAT_Work and Education
+,* (1.1.4) practical concerns - money or housing (before) *,BEFORE_Money or Housing
+,* (1.1.4) practical concerns - money or housing (after) *,AFTER_Money or Housing
+,* (1.1.4) practical concerns - money or housing numeric difference *,DIFF_NUM_Money or Housing
+,* (1.1.4) practical concerns - money or housing category difference *,DIFF_CAT_Money or Housing
+,* (1.1.4) practical concerns - insurance and travel (before) *,BEFORE_Insurance and Travel
+,* (1.1.4) practical concerns - insurance and travel (after) *,AFTER_Insurance and Travel
+,* (1.1.4) practical concerns - insurance and travel numeric difference *,DIFF_NUM_Insurance and Travel
+,* (1.1.4) practical concerns - insurance and travel category difference *,DIFF_CAT_Insurance and Travel
+,* (1.1.4) practical concerns - transport or parking (before) *,BEFORE_Transport or Parking
+,* (1.1.4) practical concerns - transport or parking (after) *,AFTER_Transport or Parking
+,* (1.1.4) practical concerns - transport or parking numeric difference *,DIFF_NUM_Transport or Parking
+,* (1.1.4) practical concerns - transport or parking category difference *,DIFF_CAT_Transport or Parking
+,* (1.1.4) practical concerns - contact communication with nhs staff (before) *,BEFORE_Contact/Communication with NHS Staff
+,* (1.1.4) practical concerns - contact communication with nhs staff (after) *,AFTER_Contact/Communication with NHS Staff
+,* (1.1.4) practical concerns - contact communication with nhs staff numeric difference *,DIFF_NUM_Contact/Communication with NHS Staff
+,* (1.1.4) practical concerns - contact communication with nhs staff category difference *,DIFF_CAT_Contact/Communication with NHS Staff
+,* (1.1.4) practical concerns - housework or shopping (before) *,BEFORE_Housework or Shopping
+,* (1.1.4) practical concerns - housework or shopping (after) *,AFTER_Housework or Shopping
+,* (1.1.4) practical concerns - housework or shopping numeric difference *,DIFF_NUM_Housework or Shopping
+,* (1.1.4) practical concerns - housework or shopping category difference *,DIFF_CAT_Housework or Shopping
+,* (1.1.4) practical concerns - washing and dressing (before) *,BEFORE_Washing and Dressing
+,* (1.1.4) practical concerns - washing and dressing (after) *,AFTER_Washing and Dressing
+,* (1.1.4) practical concerns - washing and dressing numeric difference *,DIFF_NUM_Washing and Dressing
+,* (1.1.4) practical concerns - washing and dressing category difference *,DIFF_CAT_Washing and Dressing
+,* (1.1.4) practical concerns - preparing meals and drinks (before) *,BEFORE_Preparing Meals/drinks
+,* (1.1.4) practical concerns - preparing meals and drinks (after) *,AFTER_Preparing Meals/drinks
+,* (1.1.4) practical concerns - preparing meals and drinks numeric difference *,DIFF_NUM_Preparing Meals/drinks
+,* (1.1.4) practical concerns - preparing meals and drinks category difference *,DIFF_CAT_Preparing Meals/drinks
+,* (1.1.5) family and relationship concerns - partner (before) *,BEFORE_Partner
+,* (1.1.5) family and relationship concerns - partner (after) *,AFTER_Partner
+,* (1.1.5) family and relationship concerns - partner numeric difference *,DIFF_NUM_Partner
+,* (1.1.5) family and relationship concerns - partner category difference *,DIFF_CAT_Partner
+,* (1.1.5) family and relationship concerns - children (before) *,BEFORE_Children
+,* (1.1.5) family and relationship concerns - children (after) *,AFTER_Children
+,* (1.1.5) family and relationship concerns - children numeric difference *,DIFF_NUM_Children
+,* (1.1.5) family and relationship concerns - children category difference *,DIFF_CAT_Children
+,* (1.1.5) family and relationship concerns - other relatives or friends (before) *,BEFORE_Other Relatives/Friends
+,* (1.1.5) family and relationship concerns - other relatives or friends (after) *,AFTER_Other Relatives/Friends
+,* (1.1.5) family and relationship concerns - other relatives or friends numeric difference *,DIFF_NUM_Other Relatives/Friends
+,* (1.1.5) family and relationship concerns - other relatives or friends category difference *,DIFF_CAT_Other Relatives/Friends
+,* (1.1.6) emotional concerns - difficulty making plans (before) *,BEFORE_Difficulty Making Plans
+,* (1.1.6) emotional concerns - difficulty making plans (after) *,AFTER_Difficulty Making Plans
+,* (1.1.6) emotional concerns - difficulty making plans numeric difference *,DIFF_NUM_Difficulty Making Plans
+,* (1.1.6) emotional concerns - difficulty making plans category difference *,DIFF_CAT_Difficulty Making Plans
+,* (1.1.6) emotional concerns - loss of interest or activities (before) *,BEFORE_Loss of Interest in Activities
+,* (1.1.6) emotional concerns - loss of interest or activities (after) *,AFTER_Loss of Interest in Activities
+,* (1.1.6) emotional concerns - loss of interest or activities numeric difference *,DIFF_NUM_Loss of Interest in Activities
+,* (1.1.6) emotional concerns - loss of interest or activities category difference *,DIFF_CAT_Loss of Interest in Activities
+,* (1.1.6) emotional concerns - unable to express feelings (before) *,BEFORE_Unable to Express Feelings
+,* (1.1.6) emotional concerns - unable to express feelings (after) *,AFTER_Unable to Express Feelings
+,* (1.1.6) emotional concerns - unable to express feelings numeric difference *,DIFF_NUM_Unable to Express Feelings
+,* (1.1.6) emotional concerns - unable to express feelings category difference *,DIFF_CAT_Unable to Express Feelings
+,* (1.1.6) emotional concerns - anger or frustration (before) *,BEFORE_Anger/Frustration
+,* (1.1.6) emotional concerns - anger or frustration (after) *,AFTER_Anger/Frustration
+,* (1.1.6) emotional concerns - anger or frustration numeric difference *,DIFF_NUM_Anger/Frustration
+,* (1.1.6) emotional concerns - anger or frustration category difference *,DIFF_CAT_Anger/Frustration
+,* (1.1.6) emotional concerns - guilt (before) *,BEFORE_Guilt
+,* (1.1.6) emotional concerns - guilt (after) *,AFTER_Guilt
+,* (1.1.6) emotional concerns - guilt numeric difference *,DIFF_NUM_Guilt
+,* (1.1.6) emotional concerns - guilt category difference *,DIFF_CAT_Guilt
+,* (1.1.6) emotional concerns - hopelessness (before) *,BEFORE_Hopelessness
+,* (1.1.6) emotional concerns - hopelessness (after) *,AFTER_Hopelessness
+,* (1.1.6) emotional concerns - hopelessness numeric difference *,DIFF_NUM_Hopelessness
+,* (1.1.6) emotional concerns - hopelessness category difference *,DIFF_CAT_Hopelessness
+,* (1.1.6) emotional concerns - loneliness or isolation (before) *,BEFORE_Loneliness/Isolation
+,* (1.1.6) emotional concerns - loneliness or isolation (after) *,AFTER_Loneliness/Isolation
+,* (1.1.6) emotional concerns - loneliness or isolation numeric difference *,DIFF_NUM_Loneliness/Isolation
+,* (1.1.6) emotional concerns - loneliness or isolation category difference *,DIFF_CAT_Loneliness/Isolation
+,* (1.1.6) emotional concerns - sadness or depression (before) *,BEFORE_Sadness or Depression
+,* (1.1.6) emotional concerns - sadness or depression (after) *,AFTER_Sadness or Depression
+,* (1.1.6) emotional concerns - sadness or depression numeric difference *,DIFF_NUM_Sadness or Depression
+,* (1.1.6) emotional concerns - sadness or depression category difference *,DIFF_CAT_Sadness or Depression
+,* (1.1.6) emotional concerns - worry fear or anxiety (before) *,BEFORE_Worry/Fear/Anxiety
+,* (1.1.6) emotional concerns - worry fear or anxiety (after) *,AFTER_Worry/Fear/Anxiety
+,* (1.1.6) emotional concerns - worry fear or anxiety numeric difference *,DIFF_NUM_Worry/Fear/Anxiety
+,* (1.1.6) emotional concerns - worry fear or anxiety category difference *,DIFF_CAT_Worry/Fear/Anxiety
+,* (1.1.7) spiritual or religious concerns - loss of faith spiritual concern (before) *,BEFORE_Loss of Faith or Spiritual Concern
+,* (1.1.7) spiritual or religious concerns - loss of faith spiritual concern (after) *,AFTER_Loss of Faith or Spiritual Concern
+,* (1.1.7) spiritual or religious concerns - loss of faith spiritual concern numeric difference *,DIFF_NUM_Loss of Faith or Spiritual Concern
+,* (1.1.7) spiritual or religious concerns - loss of faith spiritual concern category difference *,DIFF_CAT_Loss of Faith or Spiritual Concern
+,* (1.1.7) spiritual or religious concerns - loss meaning purpose of life (before) *,BEFORE_Loss of Meaning or Purpose of Life
+,* (1.1.7) spiritual or religious concerns - loss meaning purpose of life (after) *,AFTER_Loss of Meaning or Purpose of Life
+,* (1.1.7) spiritual or religious concerns - loss meaning purpose of life numeric difference *,DIFF_NUM_Loss of Meaning or Purpose of Life
+,* (1.1.7) spiritual or religious concerns - loss meaning purpose of life category difference *,DIFF_CAT_Loss of Meaning or Purpose of Life
+,* (1.1.7) spiritual or religious concerns - not being at peace or regret (before) *,BEFORE_Not Being at Peace with or Feeling Regret about the Past
+,* (1.1.7) spiritual or religious concerns - not being at peace or regret (after) *,AFTER_Not Being at Peace with or Feeling Regret about the Past
+,* (1.1.7) spiritual or religious concerns - not being at peace or regret numeric difference *,DIFF_NUM_Not Being at Peace with or Feeling Regret about the Past
+,* (1.1.7) spiritual or religious concerns - not being at peace or regret category difference *,DIFF_CAT_Not Being at Peace with or Feeling Regret about the Past
+,* (1.1.8) lifestyle concerns - support groups (before) *,BEFORE_Support Groups
+,* (1.1.8) lifestyle concerns - support groups (after) *,AFTER_Support Groups
+,* (1.1.8) lifestyle concerns - support groups numeric difference *,DIFF_NUM_Support Groups
+,* (1.1.8) lifestyle concerns - support groups category difference *,DIFF_CAT_Support Groups
+,* (1.1.8) lifestyle concerns - complementary therapies (before) *,BEFORE_Complementary Therapies
+,* (1.1.8) lifestyle concerns - complementary therapies (after) *,AFTER_Complementary Therapies
+,* (1.1.8) lifestyle concerns - complementary therapies numeric difference *,DIFF_NUM_Complementary Therapies
+,* (1.1.8) lifestyle concerns - complementary therapies category difference *,DIFF_CAT_Complementary Therapies
+,* (1.1.8) lifestyle concerns - diet and nutrition (before) *,BEFORE_Diet and Nutrition
+,* (1.1.8) lifestyle concerns - diet and nutrition (after) *,AFTER_Diet and Nutrition
+,* (1.1.8) lifestyle concerns - diet and nutrition numeric difference *,DIFF_NUM_Diet and Nutrition
+,* (1.1.8) lifestyle concerns - diet and nutrition category difference *,DIFF_CAT_Diet and Nutrition
+,* (1.1.8) lifestyle concerns - exercise and activity (before) *,BEFORE_Exercise and Activity
+,* (1.1.8) lifestyle concerns - exercise and activity (after) *,AFTER_Exercise and Activity
+,* (1.1.8) lifestyle concerns - exercise and activity numeric difference *,DIFF_NUM_Exercise and Activity
+,* (1.1.8) lifestyle concerns - exercise and activity category difference *,DIFF_CAT_Exercise and Activity
+,* (1.1.8) lifestyle concerns - smoking (before) *,BEFORE_Smoking
+,* (1.1.8) lifestyle concerns - smoking (after) *,AFTER_Smoking
+,* (1.1.8) lifestyle concerns - smoking numeric difference *,DIFF_NUM_Smoking
+,* (1.1.8) lifestyle concerns - smoking category difference *,DIFF_CAT_Smoking
+,* (1.1.8) lifestyle concerns - alcohol or drugs (before) *,BEFORE_Alcohol or Drugs
+,* (1.1.8) lifestyle concerns - alcohol or drugs (after) *,AFTER_Alcohol or Drugs
+,* (1.1.8) lifestyle concerns - alcohol or drugs numeric difference *,DIFF_NUM_Alcohol or Drugs
+,* (1.1.8) lifestyle concerns - alcohol or drugs category difference *,DIFF_CAT_Alcohol or Drugs
+,* (1.1.8) lifestyle concerns - sun protection (before) *,BEFORE_Sun Protection
+,* (1.1.8) lifestyle concerns - sun protection (after) *,AFTER_Sun Protection
+,* (1.1.8) lifestyle concerns - sun protection numeric difference *,DIFF_NUM_Sun Protection
+,* (1.1.8) lifestyle concerns - sun protection category difference *,DIFF_CAT_Sun Protection
+,* (1.1.8) lifestyle concerns - hobbies (before) *,BEFORE_Hobbies
+,* (1.1.8) lifestyle concerns - hobbies (after) *,AFTER_Hobbies
+,* (1.1.8) lifestyle concerns - hobbies numeric difference *,DIFF_NUM_Hobbies
+,* (1.1.8) lifestyle concerns - hobbies category difference *,DIFF_CAT_Hobbies
+,* (1.1.8) lifestyle concerns - other (before) *,BEFORE_Other
+,* (1.1.8) lifestyle concerns - other (after) *,AFTER_Other
+,* (1.1.8) lifestyle concerns - other numeric difference *,DIFF_NUM_Other
+,* (1.1.8) lifestyle concerns - other category difference *,DIFF_CAT_Other
+,* (1.1.9) overall score (inc ni) *,overall_score_inc_ni
+,* ( 1.1.10) further holistic needs assessment required (inc ni) *,1110_further_holistic_needs_assessment_required_inc_ni
+,* last icj outcomes completed *,last_icj_outcomes_completed
+,* first icj outcomes completed *,first_icj_outcomes_completed
+,* ranking (from first to last completed icj outcomes) *,ranking_from_first_to_last_completed_icj_outcomes
+,* (1.1.3) agency 1 *,agency_1
+,* (1.1.3) agency 1 - contact *,agency_1_contact
+,* (1.1.3) agency 1 - what happened *,agency_1_what_happened
+,* (1.1.3) agency 1 - was service helpful *,agency_1_was_service_helpful
+,* (1.1.3) agency 1 - score *,agency_1_score
+,* (1.1.4) benefits *,benefits_1
+,* (1.1.5) self management info *,self_management_info_1
+,* (1.1.6) agency 2 *,agency_2
+,* (1.1.6) agency 2 - contact *,agency_2_contact
+,* (1.1.6) agency 2 - what happened *,agency_2_what_happened
+,* (1.1.6) agency 2 - was service helpful *,agency_2_was_service_helpful
+,* (1.1.6) agency 2 - score *,agency_2_score
+,* (1.1.7) benefits *,benefits_2
+,* (1.1.8) self management info *,self_management_info_2
+,* (1.1.9) agency 3 *,agency_3
+,* (1.1.9) agency 3 - contact *,agency_3_contact
+,* (1.1.9) agency 3 - what happened *,agency_3_what_happened
+,* (1.1.9) agency 3 - was service helpful *,agency_3_was_service_helpful
+,* (1.1.9) agency 3 - score *,agency_3_score
+,* (1.1.10) benefits *,benefits_3
+,* (1.1.11) self management info *,self_management_info_3
+,* (1.1.12) agency 4 *,agency_4
+,* (1.1.12) agency 4 - contact *,agency_4_contact
+,* (1.1.12) agency 4 - what happened *,agency_4_what_happened
+,* (1.1.12) agency 4 - was service helpful *,agency_4_was_service_helpful
+,* (1.1.12) agency 4 - score *,agency_4_score
+,* (1.1.13) agency 5 *,agency_5
+,* (1.1.13) agency 5 - contact *,agency_5_contact
+,* (1.1.13) agency 5 - what happened *,agency_5_what_happened
+,* (1.1.13) agency 5 - was service helpful *,agency_5_was_service_helpful
+,* (1.1.13) agency 5 - score *,agency_5_score
+,* (1.1.14) agency 6 *,agency_6
+,* (1.1.14) agency 6 - contact *,agency_6_contact
+,* (1.1.14) agency 6 - what happened *,agency_6_what_happened
+,* (1.1.14) agency 6 - was service helpful *,agency_6_was_service_helpful
+,* (1.1.14) agency 6 - score *,agency_6_score
+,* (1.1.15) agency 7 *,agency_7
+,* (1.1.15) agency 7 - contact *,agency_7_contact
+,* (1.1.15) agency 7 - what happened *,agency_7_what_happened
+,* (1.1.15) agency 7 - was service helpful *,agency_7_was_service_helpful
+,* (1.1.15) agency 7 - score *,agency_7_score
+,* (1.1.16) agency 8 *,agency_8
+,* (1.1.16) agency 8 - contact *,agency_8_contact
+,* (1.1.16) agency 8 - what happened *,agency_8_what_happened
+,* (1.1.16) agency 8 - was service helpful *,agency_8_was_service_helpful
+,* (1.1.16) agency 8 - score *,agency_8_score
+,* (1.1.17) agency 9 *,agency_9
+,* (1.1.17) agency 9 - contact *,agency_9_contact
+,* (1.1.17) agency 9 - what happened *,agency_9_what_happened
+,* (1.1.17) agency 9 - was service helpful *,agency_9_was_service_helpful
+,* (1.1.17) agency 9 - score *,agency_9_score
+,* (1.1.18) agency 10 *,agency_10
+,* (1.1.18) agency 10 - contact *,agency_10_contact
+,* (1.1.18) agency 10 - what happened *,agency_10_what_happened
+,* (1.1.18) agency 10 - was service helpful *,agency_10_was_service_helpful
+,* (1.1.18) agency 10 - score *,agency_10_score
+,SIMD vigintiles,simd_vigintiles
+,* last icj referral completed *,last_icj_referral_completed
+,* first icj referral completed *,first_icj_referral_completed
+,* ranking (from first to last completed icj referral) *,ranking_from_first_to_last_completed_icj_referral
+,* (1.1.1) who is service for *,who_is_service_for
+,* (1.1.2) referral source *,referral_source
+,* (1.1.5) hear about icj service *,hear_about_icj_service
+,* (2.1.1) mobility issues *,mobility_issues
+,* (2.1.2) caring responsibilities *,caring_responsibilities
+,* (2.1.3) benefit from money/debt advice *,benefit_from_moneydebt_advice
+,* (2.1.4) mental health issues *,mental_health_issues
+,* (2.1.5) consider yourself to have a disability *,consider_yourself_to_have_a_disability
+,* (4.1.1) primary diagnosis (one) *,primary_diagnosis_one
+,* (4.1.1) primary diagnosis (two) *,primary_diagnosis_two
+,* (4.1.1) primary diagnosis (three) *,primary_diagnosis_three
+,* (4.1.2) additional diagnosis (one) *,additional_diagnosis_one
+,* (4.1.2) additional diagnosis (two) *,additional_diagnosis_two
+,* (4.1.2) additional diagnosis (three) *,additional_diagnosis_three
+,* (4.1.3) metastasis 1 *,metastasis_1
+,* (4.1.4) metastasis 2 *,metastasis_2
+,* (4.1.5) co morbidity 1 *,co_morbidity_1
+,* (4.1.6) co morbidity 2 *,co_morbidity_2
+,* (4.1.7) co morbidity 3 *,co_morbidity_3
+,* (4.1.8) co morbidity 4 *,co_morbidity_4
+,* (4.1.10) is there a history of cancer *,is_there_a_history_of_cancer
